@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Screenshot", "Pasta.Screenshot\Pasta.Screenshot.csproj", "{7FB7941A-FC4C-45B6-9739-20120E2C5FE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Core", "Pasta.Core\Pasta.Core.csproj", "{54BCD403-F0A7-4726-8381-E00A0ED8946A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.BasicEffects", "Pasta.BasicEffects\Pasta.BasicEffects.csproj", "{8D4BEB0B-F791-4408-B4C3-1AAE644CFA61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.BasicExport", "Pasta.BasicExport\Pasta.BasicExport.csproj", "{93E9A65D-54C7-40F4-B89D-0263BAE020A7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BC10F827-2015-40D2-B9DF-9FDE7C519EB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.BasicEffects.UnitTests", "Pasta.BasicEffects.UnitTests\Pasta.BasicEffects.UnitTests.csproj", "{1A15FFD4-C62A-4750-9238-C60FA654C76B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7FB7941A-FC4C-45B6-9739-20120E2C5FE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FB7941A-FC4C-45B6-9739-20120E2C5FE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FB7941A-FC4C-45B6-9739-20120E2C5FE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FB7941A-FC4C-45B6-9739-20120E2C5FE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54BCD403-F0A7-4726-8381-E00A0ED8946A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54BCD403-F0A7-4726-8381-E00A0ED8946A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54BCD403-F0A7-4726-8381-E00A0ED8946A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54BCD403-F0A7-4726-8381-E00A0ED8946A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D4BEB0B-F791-4408-B4C3-1AAE644CFA61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D4BEB0B-F791-4408-B4C3-1AAE644CFA61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D4BEB0B-F791-4408-B4C3-1AAE644CFA61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D4BEB0B-F791-4408-B4C3-1AAE644CFA61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93E9A65D-54C7-40F4-B89D-0263BAE020A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93E9A65D-54C7-40F4-B89D-0263BAE020A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93E9A65D-54C7-40F4-B89D-0263BAE020A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93E9A65D-54C7-40F4-B89D-0263BAE020A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A15FFD4-C62A-4750-9238-C60FA654C76B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A15FFD4-C62A-4750-9238-C60FA654C76B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A15FFD4-C62A-4750-9238-C60FA654C76B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A15FFD4-C62A-4750-9238-C60FA654C76B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1A15FFD4-C62A-4750-9238-C60FA654C76B} = {BC10F827-2015-40D2-B9DF-9FDE7C519EB5}
+	EndGlobalSection
+EndGlobal
