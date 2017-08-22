@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Pasta.Core
+﻿namespace Pasta.Core
 {
+    /// <summary>
+    /// The context passed to effects being edited to allow different interaction.
+    /// </summary>
     public interface IEffectEditContext
     {
 
