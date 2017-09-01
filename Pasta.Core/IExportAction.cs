@@ -10,9 +10,9 @@ namespace Pasta.Core
     {
         /// <summary>
         /// Exports the image to some storage in async way.
+        /// Can be long running operation, but can't use task here because Task can't pass AppDomain boundaries.
         /// </summary>
         /// <param name="image">The image to export.</param>
-        /// <returns>The task to be awaited on.</returns>
-        Task ExportAsync(Image image);
+        void ExportAsync(Image image);
     }
 }

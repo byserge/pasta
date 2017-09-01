@@ -2,22 +2,37 @@
 using Screna;
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 
 namespace Pasta.BasicEffects
 {
-    public class ScreenshotEffect : IEffect
+    /// <summary>
+    /// Default screenshot effect.
+    /// </summary>
+    public class ScreenshotEffect : IScreenshotEffect, IEffect
     {
-        private Bitmap screenCapture;
-
-        public ScreenshotEffect()
+        public void Apply(EffectContext context)
         {
-            screenCapture = ScreenShot.Capture();
-        }
+            var screenCapture = context["screenshotImage"] as Image;
+            if (screenCapture == null)
+            {
+                return;
+            }
 
-        public void Apply(IEffectApplyContext context)
-        {
             var g = context.Graphics;
             g.DrawImage(screenCapture, Point.Empty);
+        }
+
+        public void CaptureScreen(EffectContext context)
+        {
+            var screenshotImage = ScreenShot.Capture();
+            using (var stream = new MemoryStream())
+            {
+                screenshotImage.Save(stream, ImageFormat.Png);
+                var imageReference = context.CreateImage(stream);
+                context["screenshotImage"] = imageReference;
+            }
         }
     }
 }

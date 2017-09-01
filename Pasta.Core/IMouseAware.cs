@@ -4,10 +4,10 @@ namespace Pasta.Core
 {
     public interface IMouseAware
     {
-        void OnMouseDown(MouseEventArgs e);
+        void OnMouseDown(MouseAwareArgs e);
 
-        void OnMouseUp(MouseEventArgs e);
+        void OnMouseUp(MouseAwareArgs e);
 
-        void OnMouseMove(MouseEventArgs e);
+        void OnMouseMove(MouseAwareArgs e);
     }
 }

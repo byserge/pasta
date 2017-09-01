@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Screna, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Screna.0.8.0\lib\net45\Screna.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,8 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Effects\EffectApplyContext.cs" />
-    <Compile Include="Effects\EffectEditContext.cs" />
     <Compile Include="Effects\EffectsManager.cs" />
     <Compile Include="EditorForm.cs">
       <SubType>Form</SubType>
@@ -87,17 +82,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Pasta.BasicEffects\Pasta.BasicEffects.csproj">
-      <Project>{8d4beb0b-f791-4408-b4c3-1aae644cfa61}</Project>
-      <Name>Pasta.BasicEffects</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Pasta.BasicExport\Pasta.BasicExport.csproj">
-      <Project>{93e9a65d-54c7-40f4-b89d-0263bae020a7}</Project>
-      <Name>Pasta.BasicExport</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Pasta.Core\Pasta.Core.csproj">
       <Project>{54bcd403-f0a7-4726-8381-e00a0ed8946a}</Project>
       <Name>Pasta.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pasta.Plugin\Pasta.Plugin.csproj">
+      <Project>{ad924d97-b5e2-4e66-a35c-cd0359afc8a8}</Project>
+      <Name>Pasta.Plugin</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

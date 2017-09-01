@@ -10,7 +10,7 @@ namespace Pasta.BasicEffects
 	/// All unselected area is grayed.
 	/// Supports editing selection with mouse.
 	/// </summary>
-	public class SelectionEffect : ISelectionEffect, IEditableEffect, IMouseAware, IMayInvalidate
+	public class SelectionEffect : ISelectionEffect, IEditableEffect, IMouseAware
 	{
 		/// <summary>
 		/// Stores selection area before going to edit mode to allow cancel.
@@ -41,19 +41,18 @@ namespace Pasta.BasicEffects
 		/// </summary>
 		private Brush grayBrush = new SolidBrush(Color.FromArgb(100, Color.Black));
 
+        /// <summary>
+        /// Cached for editing context.
+        /// </summary>
+        private EffectContext context = null;
+
 		#region ISelectionEffect
 		public Rectangle Selection => selectionRectangle;
 		#endregion
 
-		#region IMayInvalidate
-
-		public event EventHandler<InvalidatedEventArgs> Invalidated;
-
-		#endregion
-
 		#region IEditableEffect
 
-		public void Apply(IEffectApplyContext context)
+		public void Apply(EffectContext context)
 		{
 			var grayedRectangles = context.Bounds.Except(selectionRectangle);
 
@@ -72,7 +71,7 @@ namespace Pasta.BasicEffects
 
 			selectionRectangle = previousSelection;
 			if (needInvalidation)
-				Invalidated?.Invoke(this, new InvalidatedEventArgs(invalidationRectangle));
+				context.Invalidate(invalidationRectangle);
 
 			isEditing = false;
 		}
@@ -85,8 +84,10 @@ namespace Pasta.BasicEffects
 			isEditing = false;
 		}
 
-		public void StartEdit(IEffectEditContext context)
+		public void StartEdit(EffectContext context)
 		{
+            this.context = context;
+
 			if (isEditing)
 				return;
 
@@ -98,7 +99,7 @@ namespace Pasta.BasicEffects
 
 		#region IMouseAware
 
-		public void OnMouseDown(MouseEventArgs e)
+		public void OnMouseDown(MouseAwareArgs e)
 		{
 			if (!isEditing)
 				return;
@@ -110,7 +111,7 @@ namespace Pasta.BasicEffects
 			mouseDownPoint = e.Location;
 		}
 
-		public void OnMouseMove(MouseEventArgs e)
+		public void OnMouseMove(MouseAwareArgs e)
 		{
 			if (!isEditing)
 				return;
@@ -132,10 +133,10 @@ namespace Pasta.BasicEffects
 
 			selectionRectangle = newSelectionRectangle;
 
-			Invalidated?.Invoke(this, new InvalidatedEventArgs(invalidatedRectangle));
+			this.context.Invalidate(invalidatedRectangle);
 		}
 
-		public void OnMouseUp(MouseEventArgs e)
+		public void OnMouseUp(MouseAwareArgs e)
 		{
 			if (!isEditing)
 				return;

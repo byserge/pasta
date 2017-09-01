@@ -6,6 +6,7 @@ namespace Pasta.Core
     /// <summary>
     /// Stores event data for Invalidated event.
     /// </summary>
+    [Serializable]
     public class InvalidatedEventArgs : EventArgs
     {
         /// <summary>

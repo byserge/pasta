@@ -1,18 +1,15 @@
 ﻿using Pasta.Core;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using Pasta.BasicExport;
+using System.Threading;
 
 namespace Pasta.Screenshot.ExportActions
 {
     /// <summary>
     /// Manages export actions.
     /// </summary>
-    public class ExportManager : IExportAction
+    public class ExportManager
     {
         /// <summary>
         /// The list of registered export actions.
@@ -21,13 +18,17 @@ namespace Pasta.Screenshot.ExportActions
 
         public ExportManager()
         {
-            Register(new ClipboardExportAction());
         }
 
         #region IExportAction
         public Task ExportAsync(Image image)
         {
-            return registeredActions[0].ExportAsync(image);
+            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            return Task.Factory.StartNew(
+                () => registeredActions[0].ExportAsync(image), 
+                new CancellationToken(), 
+                TaskCreationOptions.None, 
+                scheduler);
         }
         #endregion
 
@@ -35,9 +36,19 @@ namespace Pasta.Screenshot.ExportActions
         /// Registers the given export action.
         /// </summary>
         /// <param name="exportAction">The action to register.</param>
-        private void Register(IExportAction exportAction)
+        public void Register(IExportAction exportAction)
         {
             registeredActions.Add(exportAction);
+        }
+
+        /// <summary>
+        /// Registers the given exprot actions.
+        /// </summary>
+        /// <param name="exportActions">The actions to export</param>
+        public void Register(IEnumerable<IExportAction> exportActions)
+        {
+            foreach (var exportAction in exportActions)
+                Register(exportAction);
         }
     }
 }

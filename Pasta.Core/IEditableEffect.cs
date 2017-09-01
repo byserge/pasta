@@ -2,7 +2,7 @@
 {
     public interface IEditableEffect : IEffect
     {
-        void StartEdit(IEffectEditContext context);
+        void StartEdit(EffectContext context);
         void CommitEdit();
         void CancelEdit();
     }

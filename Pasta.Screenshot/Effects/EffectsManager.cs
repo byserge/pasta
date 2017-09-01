@@ -7,8 +7,12 @@ using System;
 
 namespace Pasta.Screenshot.Effects
 {
-    internal class EffectsManager : IMouseAware, IMayInvalidate
+    internal class EffectsManager : MarshalByRefObject, IMouseAware
     {
+        private List<Func<IEffect>> effectConstructors = new List<Func<IEffect>>();
+        private Func<ISelectionEffect> selectionConstructor;
+        private Func<IScreenshotEffect> screenshotConstructor;
+
         private List<IEffect> effects = new List<IEffect>();
 
         /// <summary>
@@ -21,15 +25,18 @@ namespace Pasta.Screenshot.Effects
         /// </summary>
         private IEffect selectedEffect;
 
-        #region IMayInvalidate
+        private EffectContext context = new EffectContext();
 
         public event EventHandler<InvalidatedEventArgs> Invalidated;
 
-        #endregion
+        public EffectsManager()
+        {
+            context.Invalidated += Effect_Invalidated;
+        }
 
         #region IMouseAware
 
-        public void OnMouseDown(MouseEventArgs e)
+        public void OnMouseDown(MouseAwareArgs e)
         {
             foreach (var mouseAwareEffect in effects.OfType<IMouseAware>())
             {
@@ -37,7 +44,7 @@ namespace Pasta.Screenshot.Effects
             }
         }
 
-        public void OnMouseUp(MouseEventArgs e)
+        public void OnMouseUp(MouseAwareArgs e)
         {
             foreach (var mouseAwareEffect in effects.OfType<IMouseAware>())
             {
@@ -45,7 +52,7 @@ namespace Pasta.Screenshot.Effects
             }
         }
 
-        public void OnMouseMove(MouseEventArgs e)
+        public void OnMouseMove(MouseAwareArgs e)
         {
             foreach (var mouseAwareEffect in effects.OfType<IMouseAware>())
             {
@@ -57,9 +64,13 @@ namespace Pasta.Screenshot.Effects
 
         public void AddEffect(IEffect effect)
         {
+            if (effect == null)
+            {
+                throw new ArgumentNullException(nameof(effect));
+            }
+
             effects.Add(effect);
             SelectEffect(effect);
-            SubscribeToEffectEvents(effect);
         }
 
         /// <summary>
@@ -97,6 +108,60 @@ namespace Pasta.Screenshot.Effects
 
         }
 
+        /// <summary>
+        /// Registers effect types.
+        /// </summary>
+        /// <param name="effectConstructors">Contsturctors to create an effect</param>
+        public void Register(IEnumerable<Func<IEffect>> effectConstructors)
+        {
+            this.effectConstructors.AddRange(effectConstructors);
+        }
+
+        /// <summary>
+        /// Captures the entire screen.
+        /// </summary>
+        public void CaptureScreen()
+        {
+            var screenshotEffect = screenshotConstructor();
+            screenshotEffect.CaptureScreen(context);
+            AddEffect(screenshotEffect as IEffect);
+        }
+
+        /// <summary>
+        /// Toogles selection mode.
+        /// </summary>
+        public void StartSelection()
+        {
+            var selectionEffect = selectionConstructor();
+            AddEffect(selectionEffect as IEffect);
+        }
+
+        /// <summary>
+        /// Registers selection effect types.
+        /// </summary>
+        /// <param name="effectConstructors">Contsturctors to create an effect</param>
+        public void Register(IEnumerable<Func<ISelectionEffect>> effectConstructors)
+        {
+            var constructor = effectConstructors.FirstOrDefault();
+            if (constructor != null)
+            {
+                this.selectionConstructor = constructor;
+            }
+        }
+
+        /// <summary>
+        /// Registers screenshot effect types.
+        /// </summary>
+        /// <param name="effectConstructors">Contsturctors to create an effect</param>
+        public void Register(IEnumerable<Func<IScreenshotEffect>> effectConstructors)
+        {
+            var constructor = effectConstructors.FirstOrDefault();
+            if (constructor != null)
+            {
+                this.screenshotConstructor = constructor;
+            }
+        }
+
         public void RemoveEffect(IEffect effect)
         {
             bool needNewSelection = selectedEffect == effect;
@@ -106,7 +171,6 @@ namespace Pasta.Screenshot.Effects
             }
 
             effects.Remove(effect);
-            UnsubscribeFromEffectEvents(effect);
 
             if (needNewSelection)
             {
@@ -117,8 +181,10 @@ namespace Pasta.Screenshot.Effects
 
         public void ApplyEffects(Graphics graphics, Rectangle bounds, Rectangle clipBounds)
         {
+            context.Graphics = graphics;
+            context.Bounds = bounds;
             graphics.FillRectangle(Brushes.White, bounds);
-            var context = new EffectApplyContext(graphics, bounds);
+            
             effects.ForEach(effect => effect.Apply(context));
         }
 
@@ -140,7 +206,7 @@ namespace Pasta.Screenshot.Effects
         {
             if (EditableEffect != null)
             {
-                EditableEffect.StartEdit(new EffectEditContext());
+                EditableEffect.StartEdit(context);
             }
         }
 
@@ -149,24 +215,6 @@ namespace Pasta.Screenshot.Effects
             if (EditableEffect != null)
             {
                 EditableEffect.CommitEdit();
-            }
-        }
-
-        private void SubscribeToEffectEvents(IEffect effect)
-        {
-            var mayInvalidate = effect as IMayInvalidate;
-            if (mayInvalidate != null)
-            {
-                mayInvalidate.Invalidated += Effect_Invalidated;
-            }
-        }
-
-        private void UnsubscribeFromEffectEvents(IEffect effect)
-        {
-            var mayInvalidate = effect as IMayInvalidate;
-            if (mayInvalidate != null)
-            {
-                mayInvalidate.Invalidated -= Effect_Invalidated;
             }
         }
 
