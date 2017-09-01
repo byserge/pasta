@@ -251,5 +251,72 @@ namespace Pasta.BasicEffects.UnitTests
 			CollectionAssert.AreEqual(expected, difference);
 		}
 		#endregion
+
+		#region FromPoints
+
+		/// <summary>
+		/// Tests that
+		/// If the first point is the top left corner then the rectangle is built correctly.
+		/// </summary>
+		[TestMethod]
+		public void FromPoints_LeftTopStartPoint_CorrectRectangleIsBuilt()
+		{
+			var a = new Point(10, 11);
+			var b = new Point(22, 25);
+			var expected = new Rectangle(10, 11, 12, 14);
+
+			var actual = RectangleExtensions.FromPoints(a, b);
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		/// Tests that
+		/// If the first point is the top right corner then the rectangle is built correctly.
+		/// </summary>
+		[TestMethod]
+		public void FromPoints_RightTopStartPoint_CorrectRectangleIsBuilt()
+		{
+			var a = new Point(10, 11);
+			var b = new Point(-10, 25);
+			var expected = new Rectangle(-10, 11, 20, 14);
+
+			var actual = RectangleExtensions.FromPoints(a, b);
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		/// Tests that
+		/// If the first point is the bottom left corner then the rectangle is built correctly.
+		/// </summary>
+		[TestMethod]
+		public void FromPoints_LeftBottomStartPoint_CorrectRectangleIsBuilt()
+		{
+			var a = new Point(10, 11);
+			var b = new Point(22, -1);
+			var expected = new Rectangle(10, -1, 12, 12);
+
+			var actual = RectangleExtensions.FromPoints(a, b);
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		/// <summary>
+		/// Tests that
+		/// If the first point is the bottom right corner then the rectangle is built correctly.
+		/// </summary>
+		[TestMethod]
+		public void FromPoints_RightBottomStartPoint_CorrectRectangleIsBuilt()
+		{
+			var a = new Point(10, 11);
+			var b = new Point(-2, -1);
+			var expected = new Rectangle(-2, -1, 12, 12);
+
+			var actual = RectangleExtensions.FromPoints(a, b);
+
+			Assert.AreEqual(expected, actual);
+		}
+		#endregion
 	}
 }

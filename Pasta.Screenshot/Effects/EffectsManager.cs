@@ -1,226 +1,236 @@
 ﻿using Pasta.Core;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Linq;
 using System;
+using System.Collections.ObjectModel;
 
 namespace Pasta.Screenshot.Effects
 {
-    internal class EffectsManager : MarshalByRefObject, IMouseAware
-    {
-        private List<Func<IEffect>> effectConstructors = new List<Func<IEffect>>();
-        private Func<ISelectionEffect> selectionConstructor;
-        private Func<IScreenshotEffect> screenshotConstructor;
+	internal class EffectsManager : MarshalByRefObject, IMouseAware
+	{
+		/// <summary>
+		/// Registered effect types information.
+		/// </summary>
+		private List<EffectInfo> effectsInfo = new List<EffectInfo>();
 
-        private List<IEffect> effects = new List<IEffect>();
 
-        /// <summary>
-        /// The effect is being edited.
-        /// </summary>
-        private IEditableEffect EditableEffect => selectedEffect as IEditableEffect;
-        
-        /// <summary>
-        /// The effect is currently selected.
-        /// </summary>
-        private IEffect selectedEffect;
+		private Func<ISelectionEffect> selectionConstructor;
+		private Func<IScreenshotEffect> screenshotConstructor;
 
-        private EffectContext context = new EffectContext();
+		private List<IEffect> effects = new List<IEffect>();
 
-        public event EventHandler<InvalidatedEventArgs> Invalidated;
+		/// <summary>
+		/// The effect is being edited.
+		/// </summary>
+		private IEditableEffect EditableEffect => selectedEffect as IEditableEffect;
 
-        public EffectsManager()
-        {
-            context.Invalidated += Effect_Invalidated;
-        }
+		/// <summary>
+		/// The effect is currently selected.
+		/// </summary>
+		private IEffect selectedEffect;
 
-        #region IMouseAware
+		private EffectContext context = new EffectContext();
 
-        public void OnMouseDown(MouseAwareArgs e)
-        {
-            foreach (var mouseAwareEffect in effects.OfType<IMouseAware>())
-            {
-                mouseAwareEffect.OnMouseDown(e);
-            }
-        }
+		public event EventHandler<InvalidatedEventArgs> Invalidated;
 
-        public void OnMouseUp(MouseAwareArgs e)
-        {
-            foreach (var mouseAwareEffect in effects.OfType<IMouseAware>())
-            {
-                mouseAwareEffect.OnMouseUp(e);
-            }
-        }
+		/// <summary>
+		/// Registered effects info.
+		/// </summary>
+		public IReadOnlyCollection<EffectInfo> EffectsInfo { get; }
 
-        public void OnMouseMove(MouseAwareArgs e)
-        {
-            foreach (var mouseAwareEffect in effects.OfType<IMouseAware>())
-            {
-                mouseAwareEffect.OnMouseMove(e);
-            }
-        }
+		public EffectsManager()
+		{
+			EffectsInfo = new ReadOnlyCollection<EffectInfo>(effectsInfo);
+			context.Invalidated += Effect_Invalidated;
+		}
 
-        #endregion
+		#region IMouseAware
 
-        public void AddEffect(IEffect effect)
-        {
-            if (effect == null)
-            {
-                throw new ArgumentNullException(nameof(effect));
-            }
+		public void OnMouseDown(MouseAwareArgs e)
+		{
+			foreach (var mouseAwareEffect in effects.OfType<IMouseAware>())
+			{
+				mouseAwareEffect.OnMouseDown(e);
+			}
+		}
 
-            effects.Add(effect);
-            SelectEffect(effect);
-        }
+		public void OnMouseUp(MouseAwareArgs e)
+		{
+			foreach (var mouseAwareEffect in effects.OfType<IMouseAware>())
+			{
+				mouseAwareEffect.OnMouseUp(e);
+			}
+		}
 
-        /// <summary>
-        /// Creates an image and applies all effects to it.
-        /// </summary>
-        /// <param name="size">The size of the image.</param>
-        /// <returns>The image with all effects applied.</returns>
-        public Image CreateImage(Size size)
-        {
-            // Create an image and apply effects
-            var bmp = new Bitmap(size.Width, size.Height);
-            using (var graphics = Graphics.FromImage(bmp))
-            {
-                var bounds = new Rectangle(Point.Empty, size);
-                this.ApplyEffects(graphics, bounds, bounds);
-            }
+		public void OnMouseMove(MouseAwareArgs e)
+		{
+			foreach (var mouseAwareEffect in effects.OfType<IMouseAware>())
+			{
+				mouseAwareEffect.OnMouseMove(e);
+			}
+		}
 
-            // Look for a selection effect to crop a part of image
-            var selectionEffect = effects.OfType<ISelectionEffect>().FirstOrDefault();
-            if (selectionEffect == null)
-            {
-                return bmp;
-            }
+		#endregion
 
-            // Crop a part of image according to the selection effect.
-            try
-            {
-                var selection = selectionEffect.Selection;
-                return bmp.Clone(selection, bmp.PixelFormat);
-            }
-            finally
-            {
-                bmp.Dispose();
-            }
+		public void AddEffect(IEffect effect)
+		{
+			if (effect == null)
+			{
+				throw new ArgumentNullException(nameof(effect));
+			}
 
-        }
+			effects.Add(effect);
+			SelectEffect(effect);
+		}
 
-        /// <summary>
-        /// Registers effect types.
-        /// </summary>
-        /// <param name="effectConstructors">Contsturctors to create an effect</param>
-        public void Register(IEnumerable<Func<IEffect>> effectConstructors)
-        {
-            this.effectConstructors.AddRange(effectConstructors);
-        }
+		/// <summary>
+		/// Creates an image and applies all effects to it.
+		/// </summary>
+		/// <param name="size">The size of the image.</param>
+		/// <returns>The image with all effects applied.</returns>
+		public Image CreateImage(Size size)
+		{
+			// Create an image and apply effects
+			var bmp = new Bitmap(size.Width, size.Height);
+			using (var graphics = Graphics.FromImage(bmp))
+			{
+				var bounds = new Rectangle(Point.Empty, size);
+				this.ApplyEffects(graphics, bounds, bounds);
+			}
 
-        /// <summary>
-        /// Captures the entire screen.
-        /// </summary>
-        public void CaptureScreen()
-        {
-            var screenshotEffect = screenshotConstructor();
-            screenshotEffect.CaptureScreen(context);
-            AddEffect(screenshotEffect as IEffect);
-        }
+			// Look for a selection effect to crop a part of image
+			var selectionEffect = effects.OfType<ISelectionEffect>().FirstOrDefault();
+			if (selectionEffect == null)
+			{
+				return bmp;
+			}
 
-        /// <summary>
-        /// Toogles selection mode.
-        /// </summary>
-        public void StartSelection()
-        {
-            var selectionEffect = selectionConstructor();
-            AddEffect(selectionEffect as IEffect);
-        }
+			// Crop a part of image according to the selection effect.
+			try
+			{
+				var selection = selectionEffect.Selection;
+				return bmp.Clone(selection, bmp.PixelFormat);
+			}
+			finally
+			{
+				bmp.Dispose();
+			}
+		}
 
-        /// <summary>
-        /// Registers selection effect types.
-        /// </summary>
-        /// <param name="effectConstructors">Contsturctors to create an effect</param>
-        public void Register(IEnumerable<Func<ISelectionEffect>> effectConstructors)
-        {
-            var constructor = effectConstructors.FirstOrDefault();
-            if (constructor != null)
-            {
-                this.selectionConstructor = constructor;
-            }
-        }
+		/// <summary>
+		/// Registers effect types.
+		/// </summary>
+		/// <param name="effectsInfo">Effects info to create effects.</param>
+		public void Register(IEnumerable<EffectInfo> effectsInfo)
+		{
+			this.effectsInfo.AddRange(effectsInfo);
+		}
 
-        /// <summary>
-        /// Registers screenshot effect types.
-        /// </summary>
-        /// <param name="effectConstructors">Contsturctors to create an effect</param>
-        public void Register(IEnumerable<Func<IScreenshotEffect>> effectConstructors)
-        {
-            var constructor = effectConstructors.FirstOrDefault();
-            if (constructor != null)
-            {
-                this.screenshotConstructor = constructor;
-            }
-        }
+		/// <summary>
+		/// Captures the entire screen.
+		/// </summary>
+		public void CaptureScreen()
+		{
+			var screenshotEffect = screenshotConstructor();
+			screenshotEffect.CaptureScreen(context);
+			AddEffect(screenshotEffect as IEffect);
+		}
 
-        public void RemoveEffect(IEffect effect)
-        {
-            bool needNewSelection = selectedEffect == effect;
-            if (needNewSelection)
-            {
-                SelectEffect(null);
-            }
+		/// <summary>
+		/// Toogles selection mode.
+		/// </summary>
+		public void StartSelection()
+		{
+			var selectionEffect = selectionConstructor();
+			AddEffect(selectionEffect as IEffect);
+		}
 
-            effects.Remove(effect);
+		/// <summary>
+		/// Registers selection effect types.
+		/// </summary>
+		/// <param name="effectConstructors">Contsturctors to create an effect</param>
+		public void Register(IEnumerable<Func<ISelectionEffect>> effectConstructors)
+		{
+			var constructor = effectConstructors.FirstOrDefault();
+			if (constructor != null)
+			{
+				this.selectionConstructor = constructor;
+			}
+		}
 
-            if (needNewSelection)
-            {
-                var effectToSelect = effects.Count == 0 ? null : effects[effects.Count - 1];
-                SelectEffect(effectToSelect);
-            }
-        }
+		/// <summary>
+		/// Registers screenshot effect types.
+		/// </summary>
+		/// <param name="effectConstructors">Contsturctors to create an effect</param>
+		public void Register(IEnumerable<Func<IScreenshotEffect>> effectConstructors)
+		{
+			var constructor = effectConstructors.FirstOrDefault();
+			if (constructor != null)
+			{
+				this.screenshotConstructor = constructor;
+			}
+		}
 
-        public void ApplyEffects(Graphics graphics, Rectangle bounds, Rectangle clipBounds)
-        {
-            context.Graphics = graphics;
-            context.Bounds = bounds;
-            graphics.FillRectangle(Brushes.White, bounds);
-            
-            effects.ForEach(effect => effect.Apply(context));
-        }
+		public void RemoveEffect(IEffect effect)
+		{
+			bool needNewSelection = selectedEffect == effect;
+			if (needNewSelection)
+			{
+				SelectEffect(null);
+			}
 
-        private void SelectEffect(IEffect effect)
-        {
-            if (effect == selectedEffect)
-            {
-                return;
-            }
+			effects.Remove(effect);
 
-            EndEdit();
+			if (needNewSelection)
+			{
+				var effectToSelect = effects.Count == 0 ? null : effects[effects.Count - 1];
+				SelectEffect(effectToSelect);
+			}
+		}
 
-            selectedEffect = effect;
+		public void ApplyEffects(Graphics graphics, Rectangle bounds, Rectangle clipBounds)
+		{
+			context.Graphics = graphics;
+			context.Bounds = bounds;
+			graphics.FillRectangle(Brushes.White, bounds);
 
-            StartEdit();
-        }
+			effects.ForEach(effect => effect.Apply(context));
+		}
 
-        private void StartEdit()
-        {
-            if (EditableEffect != null)
-            {
-                EditableEffect.StartEdit(context);
-            }
-        }
+		private void SelectEffect(IEffect effect)
+		{
+			if (effect == selectedEffect)
+			{
+				return;
+			}
 
-        private void EndEdit()
-        {
-            if (EditableEffect != null)
-            {
-                EditableEffect.CommitEdit();
-            }
-        }
+			EndEdit();
 
-        private void Effect_Invalidated(object sender, InvalidatedEventArgs e)
-        {
-            Invalidated?.Invoke(this, e);
-        }
-    }
+			selectedEffect = effect;
+
+			StartEdit();
+		}
+
+		private void StartEdit()
+		{
+			if (EditableEffect != null)
+			{
+				EditableEffect.StartEdit(context);
+			}
+		}
+
+		public void EndEdit()
+		{
+			if (EditableEffect != null)
+			{
+				EditableEffect.CommitEdit();
+			}
+		}
+
+		private void Effect_Invalidated(object sender, InvalidatedEventArgs e)
+		{
+			Invalidated?.Invoke(this, e);
+		}
+	}
 }
