@@ -7,6 +7,8 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Pasta.Screenshot
@@ -32,6 +34,7 @@ namespace Pasta.Screenshot
 			RegisterExportActions();
 
 			UpdateEffectsToolbar();
+            UpdateActionsToolbar();
 		}
 
 		private void UpdateEffectsToolbar()
@@ -52,7 +55,25 @@ namespace Pasta.Screenshot
 			}
 		}
 
-		private void InitializePlugins()
+        private void UpdateActionsToolbar()
+        {
+            actionsToolStrip.Items.Clear();
+            foreach (var actionInfo in exportManager.ActionsInfo)
+            {
+                var button = new ToolStripButton
+                {
+                    Text = actionInfo.Name,
+                    Tag = actionInfo,
+                    Image = actionInfo.IconImage,
+                    DisplayStyle = ToolStripItemDisplayStyle.Image,
+                    ImageScaling = ToolStripItemImageScaling.None
+                };
+
+                actionsToolStrip.Items.Add(button);
+            }
+        }
+
+        private void InitializePlugins()
 		{
 			pluginManager = new PluginManager();
 			var pluginInterfaces = new[]
@@ -116,13 +137,35 @@ namespace Pasta.Screenshot
                 new Func<IEffect>(() => plugin.CreatePlugin<IEffect>(type, additionalInterfaces)));
         }
 
+        private static ExportActionInfo BuildExprotActionInfo(string type, PluginHost plugin)
+        {
+            var name = type.Split('.').Last();
+            var resourceName = name + ".png";
+            Stream stream;
+            try
+            {
+                stream = plugin.GetPluginResourceStream(resourceName);
+            }
+            catch (PluginException)
+            {
+                // TODO: log exception
+                stream = null;
+            }
+
+            var image = stream == null ? null : Image.FromStream(stream);
+            return new ExportActionInfo(
+                name,
+                image,
+                new Func<IExportAction>(() => plugin.CreatePlugin<IExportAction>(type)));
+        }
+
         private void RegisterExportActions()
 		{
 			foreach (var plugin in pluginManager.Plugins)
 			{
 				var actionTypes = plugin.GetPluginTypes<IExportAction>();
-				var actions = actionTypes.Select(actionType => plugin.CreatePlugin<IExportAction>(actionType));
-				exportManager.Register(actions);
+				var actionsInfo = actionTypes.Select(actionType => BuildExprotActionInfo(actionType, plugin));
+				exportManager.Register(actionsInfo);
 			}
 		}
 
@@ -134,6 +177,8 @@ namespace Pasta.Screenshot
 
 		private void EditorForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
+            effectsManager.Dispose();
+            exportManager.Dispose();
 			pluginManager.Dispose();
 			effectsManager.Invalidated -= Effects_Invalidated;
 		}
@@ -150,18 +195,25 @@ namespace Pasta.Screenshot
 			effectsManager.StartSelection();
 			Invalidate(false);
 		}
+        
+        private async Task RunExportAction(ExportActionInfo actionInfo)
+        {
+            using (var image = effectsManager.CreateImage(this.Size))
+            {
+                var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+                await Task.Factory.StartNew(
+                    () =>
+                    {
+                        var action = actionInfo.Constructor();
+                        action.ExportAsync(image);
+                    },
+                    new CancellationToken(),
+                    TaskCreationOptions.None,
+                    scheduler);
+            }
+        }
 
-		private async void EditorForm_DoubleClick(object sender, EventArgs e)
-		{
-			using (var image = effectsManager.CreateImage(this.Size))
-			{
-				await exportManager.ExportAsync(image);
-			}
-
-			Close();
-		}
-
-		private void EditorForm_Paint(object sender, PaintEventArgs e)
+        private void EditorForm_Paint(object sender, PaintEventArgs e)
 		{
 			effectsManager.ApplyEffects(e.Graphics, this.Bounds, e.ClipRectangle);
 		}
@@ -218,5 +270,20 @@ namespace Pasta.Screenshot
 				selectedEffectInfo = null;
 			}
 		}
-	}
+
+        private async void actionsToolStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            var button = e.ClickedItem as ToolStripButton;
+            if (button == null)
+            {
+                return;
+            }
+
+            var actionInfo = button.Tag as ExportActionInfo;
+
+            await RunExportAction(actionInfo);
+
+            Close();
+        }
+    }
 }

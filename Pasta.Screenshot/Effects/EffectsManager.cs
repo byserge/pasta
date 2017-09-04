@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace Pasta.Screenshot.Effects
 {
-	internal class EffectsManager : MarshalByRefObject, IMouseAware
+	internal class EffectsManager : MarshalByRefObject, IDisposable
 	{
 		/// <summary>
 		/// Registered effect types information.
@@ -232,5 +232,13 @@ namespace Pasta.Screenshot.Effects
 		{
 			Invalidated?.Invoke(this, e);
 		}
-	}
+
+        public void Dispose()
+        {
+            effects.Clear();
+            effectsInfo.Clear();
+            selectionConstructor = null;
+            screenshotConstructor = null;
+        }
+    }
 }

@@ -51,5 +51,10 @@
       <Name>Pasta.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\ClipboardExportAction.png">
+      <CustomToolNamespace>Images</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

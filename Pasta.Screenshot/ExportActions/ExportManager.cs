@@ -3,52 +3,43 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Threading;
+using System.Collections.ObjectModel;
+using System;
 
 namespace Pasta.Screenshot.ExportActions
 {
     /// <summary>
     /// Manages export actions.
     /// </summary>
-    public class ExportManager
+    public class ExportManager : IDisposable
     {
         /// <summary>
-        /// The list of registered export actions.
-        /// </summary>
-        private List<IExportAction> registeredActions = new List<IExportAction>();
+		/// Registered export action types information.
+		/// </summary>
+		private List<ExportActionInfo> actionsInfo = new List<ExportActionInfo>();
+
+        /// <summary>
+		/// Registered export actions info.
+		/// </summary>
+		public IReadOnlyCollection<ExportActionInfo> ActionsInfo { get; }
 
         public ExportManager()
         {
-        }
-
-        #region IExportAction
-        public Task ExportAsync(Image image)
-        {
-            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            return Task.Factory.StartNew(
-                () => registeredActions[0].ExportAsync(image), 
-                new CancellationToken(), 
-                TaskCreationOptions.None, 
-                scheduler);
-        }
-        #endregion
-
-        /// <summary>
-        /// Registers the given export action.
-        /// </summary>
-        /// <param name="exportAction">The action to register.</param>
-        public void Register(IExportAction exportAction)
-        {
-            registeredActions.Add(exportAction);
+            ActionsInfo = new ReadOnlyCollection<ExportActionInfo>(actionsInfo);
         }
 
         /// <summary>
-        /// Registers the given exprot actions.
-        /// </summary>
-        /// <param name="exportActions">The actions to export</param>
-        public void Register(IEnumerable<IExportAction> exportActions)
+		/// Registers export action types.
+		/// </summary>
+		/// <param name="actionsInfo">Export actions info to create export action.</param>
+		public void Register(IEnumerable<ExportActionInfo> actionsInfo)
         {
-            foreach (var exportAction in exportActions)
-                Register(exportAction);
+            this.actionsInfo.AddRange(actionsInfo);
+        }
+
+        public void Dispose()
+        {
+            actionsInfo.Clear();
         }
     }
 }

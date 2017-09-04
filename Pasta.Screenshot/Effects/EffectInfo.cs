@@ -1,8 +1,6 @@
 ﻿using Pasta.Core;
 using System;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 
 namespace Pasta.Screenshot.Effects
 {

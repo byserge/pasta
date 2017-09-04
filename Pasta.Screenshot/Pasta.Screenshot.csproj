@@ -53,6 +53,7 @@
     <Compile Include="EditorForm.Designer.cs">
       <DependentUpon>EditorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExportActions\ExportActionInfo.cs" />
     <Compile Include="ExportActions\ExportManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
