@@ -64,46 +64,59 @@ namespace Pasta.Screenshot
 			pluginManager.LoadFrom("Plugins", pluginInterfaces);
 		}
 
-		private void RegisterEffects()
+        private static Type[] additionalInterfaces = new[]
+                {
+                    typeof(IEffect),
+                    typeof(IMouseAware),
+                    typeof(IEditableEffect)
+                };
+
+        private void RegisterEffects()
 		{
-			var additionalInterfaces = new[]
-				{
-					typeof(IEffect),
-					typeof(IMouseAware),
-					typeof(IEditableEffect)
-				};
-
 			foreach (var plugin in pluginManager.Plugins)
-			{
-				var selectionTypes = plugin.GetPluginTypes<ISelectionEffect>();
-				var screenshotTypes = plugin.GetPluginTypes<IScreenshotEffect>();
+            {
+                var selectionTypes = plugin.GetPluginTypes<ISelectionEffect>();
+                var screenshotTypes = plugin.GetPluginTypes<IScreenshotEffect>();
 
-				var effectTypes = plugin.GetPluginTypes<IEffect>();
-				var effectsInfo = effectTypes
-					.Except(selectionTypes)
-					.Except(screenshotTypes)
-					.Select(type =>
-					{
-						var name = type.Split('.').Last();
-						var resourceName = name + ".png";
-						var image = Image.FromStream(plugin.GetPluginResourceStream(resourceName));
-						return new EffectInfo(
-							name,
-							image,
-							new Func<IEffect>(() => plugin.CreatePlugin<IEffect>(type, additionalInterfaces)));
-					});
+                var effectTypes = plugin.GetPluginTypes<IEffect>();
+                var effectsInfo = effectTypes
+                    .Except(selectionTypes)
+                    .Except(screenshotTypes)
+                    .Select(type => BuildEffectInfo(type, plugin));
 
-				var selectionConstructors = selectionTypes
-					.Select(type => new Func<ISelectionEffect>(() => plugin.CreatePlugin<ISelectionEffect>(type, additionalInterfaces)));
-				var screenshotConstructors = screenshotTypes
-					.Select(type => new Func<IScreenshotEffect>(() => plugin.CreatePlugin<IScreenshotEffect>(type, additionalInterfaces)));
-				effectsManager.Register(effectsInfo);
-				effectsManager.Register(selectionConstructors);
-				effectsManager.Register(screenshotConstructors);
-			}
-		}
+                var selectionConstructors = selectionTypes
+                    .Select(type => new Func<ISelectionEffect>(() => plugin.CreatePlugin<ISelectionEffect>(type, additionalInterfaces)));
+                var screenshotConstructors = screenshotTypes
+                    .Select(type => new Func<IScreenshotEffect>(() => plugin.CreatePlugin<IScreenshotEffect>(type, additionalInterfaces)));
+                effectsManager.Register(effectsInfo);
+                effectsManager.Register(selectionConstructors);
+                effectsManager.Register(screenshotConstructors);
+            }
+        }
 
-		private void RegisterExportActions()
+        private static EffectInfo BuildEffectInfo(string type, PluginHost plugin)
+        {
+            var name = type.Split('.').Last();
+            var resourceName = name + ".png";
+            Stream stream;
+            try
+            {
+                stream = plugin.GetPluginResourceStream(resourceName);
+            }
+            catch (PluginException)
+            {
+                // TODO: log exception
+                stream = null;
+            }
+
+            var image = stream == null ? null : Image.FromStream(stream);
+            return new EffectInfo(
+                name,
+                image,
+                new Func<IEffect>(() => plugin.CreatePlugin<IEffect>(type, additionalInterfaces)));
+        }
+
+        private void RegisterExportActions()
 		{
 			foreach (var plugin in pluginManager.Plugins)
 			{

@@ -6,10 +6,7 @@ using System.Windows.Forms;
 
 namespace Pasta.BasicEffects
 {
-    /// <summary>
-    /// Allows to draw an arrow.
-    /// </summary>
-	public class ArrowEffect: PointsBaseEffect, IEditableEffect, IMouseAware
+	public class RectangleEffect: PointsBaseEffect, IEditableEffect, IMouseAware
 	{
 		/// <summary>
 		/// The arrow line width.
@@ -17,32 +14,21 @@ namespace Pasta.BasicEffects
 		private float lineWidth = 2f;
 
 		/// <summary>
-		/// The arrow width.
-		/// </summary>
-		private float arrowWidth = 3f;
-
-		/// <summary>
-		/// The arrow height.
-		/// </summary>
-		private float arrowHeight = 5f;
-
-		/// <summary>
-		/// Inflate width and height of all rectangles to take into account arrow and line thickness.
+		/// Inflate width and height of all rectangles to take into account lines width.
 		/// </summary>
 		private Size inflateSize;
 
 		/// <summary>
-		/// The pen to draw the arrow.
+		/// The pen to draw the rectangle.
 		/// </summary>
 		private Pen pen;
 
-		public ArrowEffect()
+		public RectangleEffect()
 		{
-			var inflateWidthHeight = (int)Math.Ceiling(lineWidth + arrowWidth + arrowHeight);
+			var inflateWidthHeight = (int)Math.Ceiling(lineWidth + 2);
 			inflateSize = new Size(inflateWidthHeight, inflateWidthHeight);
 			// TODO: move settings to config
 			pen = new Pen(Color.Red, lineWidth);
-			pen.CustomEndCap = new AdjustableArrowCap(arrowWidth, arrowHeight, true);
 		}
 
         protected override Size InflateSize => inflateSize;
@@ -54,7 +40,7 @@ namespace Pasta.BasicEffects
 
             var smoothingMode = context.Graphics.SmoothingMode;
             context.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            context.Graphics.DrawLine(pen, points[0], points[1]);
+            context.Graphics.DrawRectangle(pen, RectangleExtensions.FromPoints(points));
             context.Graphics.SmoothingMode = smoothingMode;
         }
 	}

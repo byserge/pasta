@@ -146,7 +146,12 @@ namespace Pasta.Plugin
 			}
 
 			var fullResourceName = pluginAssembly.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith(resourceName));
-			return pluginAssembly.GetManifestResourceStream(fullResourceName);
+            if (string.IsNullOrEmpty(fullResourceName))
+            {
+                throw new PluginException($"Resource name is not found: {resourceName}");
+            }
+
+            return pluginAssembly.GetManifestResourceStream(fullResourceName);
 		}
 	}
 }
