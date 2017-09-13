@@ -96,8 +96,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir $(TargetDir)Plugins
-copy $(SolutionDir)Pasta.BasicEffects\bin\$(ConfigurationName)\Pasta.BasicEffects.dll $(TargetDir)Plugins
-copy $(SolutionDir)Pasta.BasicEffects\bin\$(ConfigurationName)\Screna.dll $(TargetDir)Plugins
-copy $(SolutionDir)Pasta.BasicExport\bin\$(ConfigurationName)\Pasta.BasicExport.dll $(TargetDir)Plugins</PostBuildEvent>
+copy $(ProjectDir)..\Pasta.BasicEffects\$(OutDir)Pasta.BasicEffects.dll $(TargetDir)Plugins
+copy $(ProjectDir)..\Pasta.BasicEffects\$(OutDir)Screna.dll $(TargetDir)Plugins
+copy $(ProjectDir)..\Pasta.BasicExport\$(OutDir)Pasta.BasicExport.dll $(TargetDir)Plugins</PostBuildEvent>
   </PropertyGroup>
 </Project>
