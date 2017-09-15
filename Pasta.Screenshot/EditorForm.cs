@@ -205,7 +205,8 @@ namespace Pasta.Screenshot
                     () =>
                     {
                         var action = actionInfo.Constructor();
-                        action.ExportAsync(image);
+                        var context = new ExportContext(image);
+                        action.Export(context);
                     },
                     new CancellationToken(),
                     TaskCreationOptions.None,

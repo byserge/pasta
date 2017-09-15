@@ -9,10 +9,10 @@ namespace Pasta.Core
     public interface IExportAction
     {
         /// <summary>
-        /// Exports the image to some storage in async way.
-        /// Can be long running operation, but can't use task here because Task can't pass AppDomain boundaries.
+        /// Exports the image to some storage in sync way.
+        /// Can be long-running operation, but can't use task here because Task can't pass AppDomain boundaries.
         /// </summary>
-        /// <param name="image">The image to export.</param>
-        void ExportAsync(Image image);
+        /// <param name="context">The export context containing the image to export.</param>
+        void Export(ExportContext context);
     }
 }

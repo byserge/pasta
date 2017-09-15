@@ -1,9 +1,5 @@
 ﻿using Pasta.Core;
-using System;
-using System.Threading.Tasks;
-using System.Drawing;
 using System.Windows.Forms;
-using System.Threading;
 
 namespace Pasta.BasicExport
 {
@@ -15,15 +11,10 @@ namespace Pasta.BasicExport
         /// <summary>
         /// Exports the image into the clipboard.
         /// </summary>
-        /// <param name="image">The image to export.</param>
-        public void ExportAsync(Image image)
+        /// <param name="context">The export context containing the image to export.</param>
+        public void Export(ExportContext context)
         {
-            if (image == null)
-            {
-                throw new ArgumentNullException(nameof(image));
-            }
-
-            Clipboard.SetImage(image);
+            Clipboard.SetImage(context.Image);
         }
     }
 }
