@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Screenshot", "Pasta.S
 	ProjectSection(ProjectDependencies) = postProject
 		{8D4BEB0B-F791-4408-B4C3-1AAE644CFA61} = {8D4BEB0B-F791-4408-B4C3-1AAE644CFA61}
 		{93E9A65D-54C7-40F4-B89D-0263BAE020A7} = {93E9A65D-54C7-40F4-B89D-0263BAE020A7}
+		{833FDFCD-C8E6-42F2-AA63-66D155629114} = {833FDFCD-C8E6-42F2-AA63-66D155629114}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Core", "Pasta.Core\Pasta.Core.csproj", "{54BCD403-F0A7-4726-8381-E00A0ED8946A}"
@@ -20,6 +21,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.BasicEffects.UnitTests", "Pasta.BasicEffects.UnitTests\Pasta.BasicEffects.UnitTests.csproj", "{1A15FFD4-C62A-4750-9238-C60FA654C76B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Plugin", "Pasta.Plugin\Pasta.Plugin.csproj", "{AD924D97-B5E2-4E66-A35C-CD0359AFC8A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.OcrExport", "Pasta.OcrExport\Pasta.OcrExport.csproj", "{833FDFCD-C8E6-42F2-AA63-66D155629114}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +54,10 @@ Global
 		{AD924D97-B5E2-4E66-A35C-CD0359AFC8A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD924D97-B5E2-4E66-A35C-CD0359AFC8A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD924D97-B5E2-4E66-A35C-CD0359AFC8A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{833FDFCD-C8E6-42F2-AA63-66D155629114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{833FDFCD-C8E6-42F2-AA63-66D155629114}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{833FDFCD-C8E6-42F2-AA63-66D155629114}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{833FDFCD-C8E6-42F2-AA63-66D155629114}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

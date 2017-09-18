@@ -22,6 +22,7 @@ namespace Pasta.Screenshot
         private bool isClosing = false;
 
         private AboutForm aboutForm;
+        private EditorForm editorForm;
 
         public MainForm()
         {
@@ -37,7 +38,7 @@ namespace Pasta.Screenshot
 
             InitializeKeyboardHook();
 
-            WindowState = FormWindowState.Minimized;
+            this.WindowState = FormWindowState.Minimized;
         }
 
         private void InitializeKeyboardHook()
@@ -144,8 +145,22 @@ namespace Pasta.Screenshot
 
         private void KeyboardHook_OnKeyHook(object sender, KeyEventArgs e)
         {
-            var editorForm = new EditorForm(this.effectsManager, this.exportManager);
-            editorForm.Show();
+            if (editorForm != null)
+            {
+                return;
+            }
+
+            editorForm = new EditorForm(this.effectsManager, this.exportManager);
+            try
+            {
+                editorForm.ShowDialog();
+            }
+            finally
+            {
+                var form = editorForm;
+                editorForm = null;
+                form.Dispose();
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

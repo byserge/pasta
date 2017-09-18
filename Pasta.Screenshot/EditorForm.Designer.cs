@@ -66,7 +66,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "EditorForm";
             this.Text = "Form1";
-            this.TopMost = true;
             this.Deactivate += new System.EventHandler(this.EditorForm_Deactivate);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditorForm_FormClosed);
             this.Load += new System.EventHandler(this.EditorForm_Load);

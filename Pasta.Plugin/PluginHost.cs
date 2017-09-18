@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Pasta.Plugin
 {
@@ -23,7 +24,10 @@ namespace Pasta.Plugin
 		{
 			var domain = AppDomain.CurrentDomain;
 			pluginAssembly = domain.Load(AssemblyName.GetAssemblyName(pluginAssemblyPath));
-		}
+            
+            // Required for loading native dependencies
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(pluginAssemblyPath));
+        }
 
 		/// <summary>
 		/// Get the list of plugin types in the plugin assembly.
@@ -153,5 +157,5 @@ namespace Pasta.Plugin
 
             return pluginAssembly.GetManifestResourceStream(fullResourceName);
 		}
-	}
+    }
 }

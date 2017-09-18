@@ -26,7 +26,11 @@ namespace Pasta.Screenshot
 
 			UpdateEffectsToolbar();
             UpdateActionsToolbar();
-		}
+
+#if !DEBUG
+            this.TopMost = true;
+#endif
+        }
 
         private void UpdateEffectsToolbar()
 		{
