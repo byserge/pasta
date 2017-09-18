@@ -13,31 +13,24 @@ using System.Windows.Forms;
 
 namespace Pasta.Screenshot
 {
-	public partial class EditorForm : Form
+	internal partial class EditorForm : Form
 	{
-		private EffectsManager effectsManager;
-		private ExportManager exportManager;
-		private PluginManager pluginManager;
-
 		private EffectInfo selectedEffectInfo;
+        private readonly EffectsManager effectsManager;
+        private readonly ExportManager exportManager;
 
-		public EditorForm()
+		public EditorForm(EffectsManager effectsManager, ExportManager exportManager)
 		{
+            this.effectsManager = effectsManager;
+            this.exportManager = exportManager;
+
 			InitializeComponent();
-
-			InitializePlugins();
-
-			effectsManager = new EffectsManager();
-			RegisterEffects();
-
-			exportManager = new ExportManager();
-			RegisterExportActions();
 
 			UpdateEffectsToolbar();
             UpdateActionsToolbar();
 		}
 
-		private void UpdateEffectsToolbar()
+        private void UpdateEffectsToolbar()
 		{
 			effectsToolStrip.Items.Clear();
 			foreach (var effectInfo in effectsManager.EffectsInfo)
@@ -48,7 +41,7 @@ namespace Pasta.Screenshot
 					Tag = effectInfo,
 					Image = effectInfo.IconImage,
 					DisplayStyle = ToolStripItemDisplayStyle.Image,
-					ImageScaling = ToolStripItemImageScaling.None
+					ImageScaling = ToolStripItemImageScaling.SizeToFit
 				};
 
 				effectsToolStrip.Items.Add(button);
@@ -66,108 +59,12 @@ namespace Pasta.Screenshot
                     Tag = actionInfo,
                     Image = actionInfo.IconImage,
                     DisplayStyle = ToolStripItemDisplayStyle.Image,
-                    ImageScaling = ToolStripItemImageScaling.None
+                    ImageScaling = ToolStripItemImageScaling.SizeToFit
                 };
 
                 actionsToolStrip.Items.Add(button);
             }
         }
-
-        private void InitializePlugins()
-		{
-			pluginManager = new PluginManager();
-			var pluginInterfaces = new[]
-			{
-				typeof(IEffect),
-				typeof(IEditableEffect),
-				typeof(IExportAction)
-			};
-			pluginManager.LoadFrom("Plugins", pluginInterfaces);
-		}
-
-        private static Type[] additionalInterfaces = new[]
-                {
-                    typeof(IEffect),
-                    typeof(IMouseAware),
-                    typeof(IEditableEffect)
-                };
-
-        private void RegisterEffects()
-		{
-			foreach (var plugin in pluginManager.Plugins)
-            {
-                var selectionTypes = plugin.GetPluginTypes<ISelectionEffect>();
-                var screenshotTypes = plugin.GetPluginTypes<IScreenshotEffect>();
-
-                var effectTypes = plugin.GetPluginTypes<IEffect>();
-                var effectsInfo = effectTypes
-                    .Except(selectionTypes)
-                    .Except(screenshotTypes)
-                    .Select(type => BuildEffectInfo(type, plugin));
-
-                var selectionConstructors = selectionTypes
-                    .Select(type => new Func<ISelectionEffect>(() => plugin.CreatePlugin<ISelectionEffect>(type, additionalInterfaces)));
-                var screenshotConstructors = screenshotTypes
-                    .Select(type => new Func<IScreenshotEffect>(() => plugin.CreatePlugin<IScreenshotEffect>(type, additionalInterfaces)));
-                effectsManager.Register(effectsInfo);
-                effectsManager.Register(selectionConstructors);
-                effectsManager.Register(screenshotConstructors);
-            }
-        }
-
-        private static EffectInfo BuildEffectInfo(string type, PluginHost plugin)
-        {
-            var name = type.Split('.').Last();
-            var resourceName = name + ".png";
-            Stream stream;
-            try
-            {
-                stream = plugin.GetPluginResourceStream(resourceName);
-            }
-            catch (PluginException)
-            {
-                // TODO: log exception
-                stream = null;
-            }
-
-            var image = stream == null ? null : Image.FromStream(stream);
-            return new EffectInfo(
-                name,
-                image,
-                new Func<IEffect>(() => plugin.CreatePlugin<IEffect>(type, additionalInterfaces)));
-        }
-
-        private static ExportActionInfo BuildExprotActionInfo(string type, PluginHost plugin)
-        {
-            var name = type.Split('.').Last();
-            var resourceName = name + ".png";
-            Stream stream;
-            try
-            {
-                stream = plugin.GetPluginResourceStream(resourceName);
-            }
-            catch (PluginException)
-            {
-                // TODO: log exception
-                stream = null;
-            }
-
-            var image = stream == null ? null : Image.FromStream(stream);
-            return new ExportActionInfo(
-                name,
-                image,
-                new Func<IExportAction>(() => plugin.CreatePlugin<IExportAction>(type)));
-        }
-
-        private void RegisterExportActions()
-		{
-			foreach (var plugin in pluginManager.Plugins)
-			{
-				var actionTypes = plugin.GetPluginTypes<IExportAction>();
-				var actionsInfo = actionTypes.Select(actionType => BuildExprotActionInfo(actionType, plugin));
-				exportManager.Register(actionsInfo);
-			}
-		}
 
 		private void EditorForm_Load(object sender, EventArgs e)
 		{
@@ -177,9 +74,7 @@ namespace Pasta.Screenshot
 
 		private void EditorForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-            effectsManager.Dispose();
-            exportManager.Dispose();
-			pluginManager.Dispose();
+            
 			effectsManager.Invalidated -= Effects_Invalidated;
 		}
 

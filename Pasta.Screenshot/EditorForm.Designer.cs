@@ -35,6 +35,7 @@
             // effectsToolStrip
             // 
             this.effectsToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.effectsToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.effectsToolStrip.Location = new System.Drawing.Point(0, 0);
             this.effectsToolStrip.Name = "effectsToolStrip";
             this.effectsToolStrip.Size = new System.Drawing.Size(284, 25);
@@ -45,6 +46,7 @@
             // 
             this.actionsToolStrip.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.actionsToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.actionsToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.actionsToolStrip.Location = new System.Drawing.Point(0, 236);
             this.actionsToolStrip.Name = "actionsToolStrip";
             this.actionsToolStrip.Size = new System.Drawing.Size(284, 25);
