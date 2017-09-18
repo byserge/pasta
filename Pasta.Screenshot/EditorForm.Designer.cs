@@ -66,9 +66,12 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "EditorForm";
             this.Text = "Form1";
+            this.TopMost = true;
+            this.Deactivate += new System.EventHandler(this.EditorForm_Deactivate);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditorForm_FormClosed);
             this.Load += new System.EventHandler(this.EditorForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.EditorForm_Paint);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EditorForm_KeyDown);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.EditorForm_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EditorForm_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.EditorForm_MouseUp);

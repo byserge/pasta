@@ -1,11 +1,9 @@
 ﻿using Pasta.Core;
-using Pasta.Plugin;
 using Pasta.Screenshot.Effects;
 using Pasta.Screenshot.ExportActions;
 using System;
 using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -68,13 +66,13 @@ namespace Pasta.Screenshot
 
 		private void EditorForm_Load(object sender, EventArgs e)
 		{
-			effectsManager.Invalidated += Effects_Invalidated;
+            this.effectsManager.Clear();
+            effectsManager.Invalidated += Effects_Invalidated;
 			PrintScreen();
 		}
 
 		private void EditorForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-            
 			effectsManager.Invalidated -= Effects_Invalidated;
 		}
 
@@ -179,6 +177,19 @@ namespace Pasta.Screenshot
 
             await RunExportAction(actionInfo);
 
+            Close();
+        }
+
+        private void EditorForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                Close();
+            }
+        }
+
+        private void EditorForm_Deactivate(object sender, EventArgs e)
+        {
             Close();
         }
     }

@@ -2,7 +2,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 
 namespace Pasta.BasicEffects
 {
@@ -25,8 +24,11 @@ namespace Pasta.BasicEffects
 
 		public RectangleEffect()
 		{
-			var inflateWidthHeight = (int)Math.Ceiling(lineWidth + 2);
+            // I don't know, why setting inflate size less then +20 leads to disappearing right side of the rectangle 
+            // while moving mouse quickly to the right.
+			var inflateWidthHeight = (int)Math.Ceiling(lineWidth + 20);
 			inflateSize = new Size(inflateWidthHeight, inflateWidthHeight);
+
 			// TODO: move settings to config
 			pen = new Pen(Color.Red, lineWidth);
 		}

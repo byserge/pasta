@@ -36,6 +36,8 @@ namespace Pasta.Screenshot
             RegisterExportActions();
 
             InitializeKeyboardHook();
+
+            WindowState = FormWindowState.Minimized;
         }
 
         private void InitializeKeyboardHook()
