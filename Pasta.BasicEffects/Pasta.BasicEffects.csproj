@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LineEffect.cs" />
     <Compile Include="RectangleEffect.cs" />
     <Compile Include="PointsBaseEffect.cs" />
     <Compile Include="ArrowEffect.cs" />
@@ -66,6 +67,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\RectangleEffect.png">
+      <CustomToolNamespace>Images</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\LineEffect.png">
       <CustomToolNamespace>Images</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>

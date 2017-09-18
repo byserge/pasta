@@ -157,7 +157,13 @@ namespace Pasta.Screenshot
 			button.Checked = !button.Checked;
 			if (button.Checked)
 			{
-				selectedEffectInfo = button.Tag as EffectInfo;
+                // Uncheck all other buttons
+                effectsToolStrip.Items
+                    .OfType<ToolStripButton>()
+                    .Where(b => b != button)
+                    .ToList()
+                    .ForEach(b => b.Checked = false);
+                selectedEffectInfo = button.Tag as EffectInfo;
 			}
 			else
 			{
