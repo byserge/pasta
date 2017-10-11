@@ -49,6 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.1.1" />
+    <PackageReference Include="Microsoft.Net.Compilers">
+      <Version>2.3.2</Version>
+    </PackageReference>
     <PackageReference Include="Moq" Version="4.7.99" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />

@@ -6,45 +6,45 @@ using System.IO;
 
 namespace Pasta.Core
 {
-    public class EffectContext : MarshalByRefObject
-    {
-        private Dictionary<string, object> contextItems = new Dictionary<string, object>();
+	public class EffectContext : MarshalByRefObject
+	{
+		private Dictionary<string, object> contextItems = new Dictionary<string, object>();
 
-        public Graphics Graphics { get; set; }
-        public Rectangle Bounds { get; set; }
-        
-        /// <summary>
-        /// Triggered by Invlidate() when effects request to repaint a part of the screen.
-        /// </summary>
-        public event EventHandler<InvalidatedEventArgs> Invalidated;
+		public Graphics Graphics { get; set; }
+		public Rectangle Bounds { get; set; }
 
-        /// <summary>
-        /// Context items stored for the session.
-        /// </summary>
-        /// <param name="key">The Item key.</param>
-        /// <returns>The context item.</returns>
-        public object this[string key] {
-            get
-            {
-                object item;
-                if (!contextItems.TryGetValue(key, out item))
-                    item = null;
-                return item;
-            }
-            set
-            {
-                contextItems[key] = value;
-            }
-        }
+		/// <summary>
+		/// Triggered by Invlidate() when effects request to repaint a part of the screen.
+		/// </summary>
+		public event EventHandler<InvalidatedEventArgs> Invalidated;
 
-        public Image CreateImage(Stream stream)
-        {
-            return Image.FromStream(stream);
-        }
+		/// <summary>
+		/// Context items stored for the session.
+		/// </summary>
+		/// <param name="key">The Item key.</param>
+		/// <returns>The context item.</returns>
+		public object this[string key]
+		{
+			get
+			{
+				if (!contextItems.TryGetValue(key, out var item))
+					return null;
+				return item;
+			}
+			set
+			{
+				contextItems[key] = value;
+			}
+		}
 
-        public void Invalidate(Rectangle rectangle)
-        {
-            Invalidated?.Invoke(this, new InvalidatedEventArgs(rectangle));
-        }
-    }
+		public Image CreateImage(Stream stream)
+		{
+			return Image.FromStream(stream);
+		}
+
+		public void Invalidate(Rectangle rectangle)
+		{
+			Invalidated?.Invoke(this, new InvalidatedEventArgs(rectangle));
+		}
+	}
 }

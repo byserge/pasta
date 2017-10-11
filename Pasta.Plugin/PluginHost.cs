@@ -127,7 +127,8 @@ namespace Pasta.Plugin
 			proxyGenerator = proxyGenerator ?? new ProxyGenerator();
 			var proxyOptions = new ProxyGenerationOptions
 			{
-				BaseTypeForInterfaceProxy = typeof(MarshalByRefObject)
+				BaseTypeForInterfaceProxy = typeof(MarshalByRefObject),
+                Selector = null,
 			};
 
 			var proxy = (TInterface)proxyGenerator.CreateInterfaceProxyWithTarget(interfaceType, interfacesToProxy, pluginObj, proxyOptions);
@@ -157,5 +158,14 @@ namespace Pasta.Plugin
 
             return pluginAssembly.GetManifestResourceStream(fullResourceName);
 		}
+
+        public override object InitializeLifetimeService()
+        {
+            // Prevents the object from being disconnected from the host domain.
+            // Suggested reading: 
+            // http://blogs.microsoft.co.il/sasha/2008/07/19/appdomains-and-remoting-life-time-service/
+            // https://social.msdn.microsoft.com/Forums/en-US/3ab17b40-546f-4373-8c08-f0f072d818c9/remotingexception-when-raising-events-across-appdomains?forum=netfxremoting
+            return null;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -89,6 +89,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -112,18 +113,14 @@
       <Name>Pasta.Plugin</Name>
     </ProjectReference>
   </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Net.Compilers" Version="2.3.2">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir $(TargetDir)Plugins
-copy $(ProjectDir)..\Pasta.BasicEffects\$(OutDir)Pasta.BasicEffects.dll $(TargetDir)Plugins
-copy $(ProjectDir)..\Pasta.BasicEffects\$(OutDir)Screna.dll $(TargetDir)Plugins
-copy $(ProjectDir)..\Pasta.BasicExport\$(OutDir)Pasta.BasicExport.dll $(TargetDir)Plugins
-
-copy $(ProjectDir)..\Pasta.OcrExport\$(OutDir)Pasta.OcrExport.dll $(TargetDir)Plugins
-copy $(ProjectDir)..\Pasta.OcrExport\$(OutDir)Tesseract.dll $(TargetDir)Plugins
-xcopy $(ProjectDir)..\Pasta.OcrExport\$(OutDir)tessdata $(TargetDir)Plugins\tessdata /E /I /Y
-xcopy $(ProjectDir)..\Pasta.OcrExport\$(OutDir)x86 $(TargetDir)Plugins\x86 /E /I /Y
-xcopy $(ProjectDir)..\Pasta.OcrExport\$(OutDir)x64 $(TargetDir)Plugins\x64 /E /I /Y
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

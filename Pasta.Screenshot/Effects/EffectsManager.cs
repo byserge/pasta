@@ -96,6 +96,7 @@ namespace Pasta.Screenshot.Effects
                 context.Invalidated -= Effect_Invalidated;
             }
 
+            selectedEffect = null;
             context = new EffectContext();
             context.Invalidated += Effect_Invalidated;
             effects.Clear();

@@ -17,10 +17,11 @@ namespace Pasta.Core
         public object this[string key] {
             get
             {
-                object item;
-                if (!contextItems.TryGetValue(key, out item))
-                    item = null;
-                return item;
+	            if (!contextItems.TryGetValue(key, out var item))
+	            {
+		            return null;
+	            }
+	            return item;
             }
             set
             {

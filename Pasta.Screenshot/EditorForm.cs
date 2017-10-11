@@ -14,25 +14,25 @@ namespace Pasta.Screenshot
 	internal partial class EditorForm : Form
 	{
 		private EffectInfo selectedEffectInfo;
-        private readonly EffectsManager effectsManager;
-        private readonly ExportManager exportManager;
+		private readonly EffectsManager effectsManager;
+		private readonly ExportManager exportManager;
 
 		public EditorForm(EffectsManager effectsManager, ExportManager exportManager)
 		{
-            this.effectsManager = effectsManager;
-            this.exportManager = exportManager;
+			this.effectsManager = effectsManager;
+			this.exportManager = exportManager;
 
 			InitializeComponent();
 
 			UpdateEffectsToolbar();
-            UpdateActionsToolbar();
+			UpdateActionsToolbar();
 
 #if !DEBUG
             this.TopMost = true;
 #endif
-        }
+		}
 
-        private void UpdateEffectsToolbar()
+		private void UpdateEffectsToolbar()
 		{
 			effectsToolStrip.Items.Clear();
 			foreach (var effectInfo in effectsManager.EffectsInfo)
@@ -50,28 +50,28 @@ namespace Pasta.Screenshot
 			}
 		}
 
-        private void UpdateActionsToolbar()
-        {
-            actionsToolStrip.Items.Clear();
-            foreach (var actionInfo in exportManager.ActionsInfo)
-            {
-                var button = new ToolStripButton
-                {
-                    Text = actionInfo.Name,
-                    Tag = actionInfo,
-                    Image = actionInfo.IconImage,
-                    DisplayStyle = ToolStripItemDisplayStyle.Image,
-                    ImageScaling = ToolStripItemImageScaling.SizeToFit
-                };
+		private void UpdateActionsToolbar()
+		{
+			actionsToolStrip.Items.Clear();
+			foreach (var actionInfo in exportManager.ActionsInfo)
+			{
+				var button = new ToolStripButton
+				{
+					Text = actionInfo.Name,
+					Tag = actionInfo,
+					Image = actionInfo.IconImage,
+					DisplayStyle = ToolStripItemDisplayStyle.Image,
+					ImageScaling = ToolStripItemImageScaling.SizeToFit
+				};
 
-                actionsToolStrip.Items.Add(button);
-            }
-        }
+				actionsToolStrip.Items.Add(button);
+			}
+		}
 
 		private void EditorForm_Load(object sender, EventArgs e)
 		{
-            this.effectsManager.Clear();
-            effectsManager.Invalidated += Effects_Invalidated;
+			this.effectsManager.Clear();
+			effectsManager.Invalidated += Effects_Invalidated;
 			PrintScreen();
 		}
 
@@ -92,26 +92,26 @@ namespace Pasta.Screenshot
 			effectsManager.StartSelection();
 			Invalidate(false);
 		}
-        
-        private async Task RunExportAction(ExportActionInfo actionInfo)
-        {
-            using (var image = effectsManager.CreateImage(this.Size))
-            {
-                var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
-                await Task.Factory.StartNew(
-                    () =>
-                    {
-                        var action = actionInfo.Constructor();
-                        var context = new ExportContext(image);
-                        action.Export(context);
-                    },
-                    new CancellationToken(),
-                    TaskCreationOptions.None,
-                    scheduler);
-            }
-        }
 
-        private void EditorForm_Paint(object sender, PaintEventArgs e)
+		private async Task RunExportAction(ExportActionInfo actionInfo)
+		{
+			using (var image = effectsManager.CreateImage(this.Size))
+			{
+				var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+				await Task.Factory.StartNew(
+					() =>
+					{
+						var action = actionInfo.Constructor();
+						var context = new ExportContext(image);
+						action.Export(context);
+					},
+					new CancellationToken(),
+					TaskCreationOptions.None,
+					scheduler);
+			}
+		}
+
+		private void EditorForm_Paint(object sender, PaintEventArgs e)
 		{
 			effectsManager.ApplyEffects(e.Graphics, this.Bounds, e.ClipRectangle);
 		}
@@ -124,7 +124,7 @@ namespace Pasta.Screenshot
 				var effect = selectedEffectInfo.Constructor();
 				effectsManager.AddEffect(effect);
 			}
-			
+
 			effectsManager.OnMouseDown(new MouseAwareArgs(e));
 		}
 
@@ -137,7 +137,7 @@ namespace Pasta.Screenshot
 			{
 				effectsManager.EndEdit();
 			}
-			
+
 		}
 
 		private void EditorForm_MouseMove(object sender, MouseEventArgs e)
@@ -161,13 +161,13 @@ namespace Pasta.Screenshot
 			button.Checked = !button.Checked;
 			if (button.Checked)
 			{
-                // Uncheck all other buttons
-                effectsToolStrip.Items
-                    .OfType<ToolStripButton>()
-                    .Where(b => b != button)
-                    .ToList()
-                    .ForEach(b => b.Checked = false);
-                selectedEffectInfo = button.Tag as EffectInfo;
+				// Uncheck all other buttons
+				effectsToolStrip.Items
+					.OfType<ToolStripButton>()
+					.Where(b => b != button)
+					.ToList()
+					.ForEach(b => b.Checked = false);
+				selectedEffectInfo = button.Tag as EffectInfo;
 			}
 			else
 			{
@@ -175,32 +175,32 @@ namespace Pasta.Screenshot
 			}
 		}
 
-        private async void actionsToolStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            var button = e.ClickedItem as ToolStripButton;
-            if (button == null)
-            {
-                return;
-            }
+		private async void actionsToolStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			var button = e.ClickedItem as ToolStripButton;
+			if (button == null)
+			{
+				return;
+			}
 
-            var actionInfo = button.Tag as ExportActionInfo;
+			var actionInfo = button.Tag as ExportActionInfo;
 
-            await RunExportAction(actionInfo);
+			await RunExportAction(actionInfo);
 
-            Close();
-        }
+			Close();
+		}
 
-        private void EditorForm_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Escape)
-            {
-                Close();
-            }
-        }
+		private void EditorForm_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+			{
+				Close();
+			}
+		}
 
-        private void EditorForm_Deactivate(object sender, EventArgs e)
-        {
-            Close();
-        }
-    }
+		private void EditorForm_Deactivate(object sender, EventArgs e)
+		{
+			Close();
+		}
+	}
 }
