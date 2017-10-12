@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Screenshot", "Pasta.Screenshot\Pasta.Screenshot.csproj", "{7FB7941A-FC4C-45B6-9739-20120E2C5FE7}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -23,6 +23,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Plugin", "Pasta.Plugin\Pasta.Plugin.csproj", "{AD924D97-B5E2-4E66-A35C-CD0359AFC8A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.OcrExport", "Pasta.OcrExport\Pasta.OcrExport.csproj", "{833FDFCD-C8E6-42F2-AA63-66D155629114}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Editor", "Pasta.Editor\Pasta.Editor.csproj", "{DDACDCDD-F002-47F0-9D11-A235E28A4D04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,11 +60,18 @@ Global
 		{833FDFCD-C8E6-42F2-AA63-66D155629114}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{833FDFCD-C8E6-42F2-AA63-66D155629114}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{833FDFCD-C8E6-42F2-AA63-66D155629114}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDACDCDD-F002-47F0-9D11-A235E28A4D04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDACDCDD-F002-47F0-9D11-A235E28A4D04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDACDCDD-F002-47F0-9D11-A235E28A4D04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDACDCDD-F002-47F0-9D11-A235E28A4D04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1A15FFD4-C62A-4750-9238-C60FA654C76B} = {BC10F827-2015-40D2-B9DF-9FDE7C519EB5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51219FB7-285E-41C9-9C21-F22D01F46F0E}
 	EndGlobalSection
 EndGlobal

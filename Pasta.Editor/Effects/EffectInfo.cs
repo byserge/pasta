@@ -2,12 +2,12 @@
 using System;
 using System.Drawing;
 
-namespace Pasta.Screenshot.Effects
+namespace Pasta.Editor.Effects
 {
 	/// <summary>
 	/// Represents effect info used to create a new effect.
 	/// </summary>
-	public class EffectInfo
+	internal class EffectInfo
 	{
 		/// <summary>
 		/// The effect name

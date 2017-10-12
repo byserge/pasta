@@ -1,215 +1,118 @@
 ﻿using Pasta.Core;
 using Pasta.Plugin;
-using Pasta.Screenshot.Effects;
-using Pasta.Screenshot.ExportActions;
 using System;
-using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace Pasta.Screenshot
 {
-    public partial class MainForm : Form
-    {
-        private KeyboardHook keyboardHook;
+	public partial class MainForm : Form
+	{
+		private KeyboardHook keyboardHook;
 
-        private EffectsManager effectsManager;
-        private ExportManager exportManager;
-        private PluginManager pluginManager;
+		private IEditorManager editorManager;
 
-        private bool isClosing = false;
+		private PluginManager pluginManager;
 
-        private AboutForm aboutForm;
-        private EditorForm editorForm;
+		private bool isClosing = false;
 
-        public MainForm()
-        {
-            InitializeComponent();
+		private AboutForm aboutForm;
 
-            InitializePlugins();
+		public MainForm()
+		{
+			InitializeComponent();
 
-            effectsManager = new EffectsManager();
-            RegisterEffects();
+			InitializePlugins();
 
-            exportManager = new ExportManager();
-            RegisterExportActions();
+			InitializeEditorManager();
 
-            InitializeKeyboardHook();
+			RegisterEditorPlugins();
 
-            this.WindowState = FormWindowState.Minimized;
-        }
+			InitializeKeyboardHook();
 
-        private void InitializeKeyboardHook()
-        {
-            keyboardHook = new KeyboardHook(keys => keys == Keys.PrintScreen);
-            keyboardHook.OnKeyHook += KeyboardHook_OnKeyHook;
-        }
+			this.WindowState = FormWindowState.Minimized;
+		}
 
-        private void InitializePlugins()
-        {
-            pluginManager = new PluginManager();
-            var pluginInterfaces = new[]
-            {
-                typeof(IEffect),
-                typeof(IEditableEffect),
-                typeof(IExportAction)
-            };
-            pluginManager.LoadFrom("Plugins", pluginInterfaces);
-        }
+		private void InitializeEditorManager()
+		{
+			var editorManagerPlugin = pluginManager.Plugins.First(plugin => plugin.HasPluginInterfaces(new[] { typeof(IEditorManager) }));
+			var pluginType = pluginManager.GetPluginTypes<IEditorManager>().First();
+			editorManager = editorManagerPlugin.CreatePlugin<IEditorManager>(pluginType);
+		}
 
-        private static Type[] additionalInterfaces = new[]
-                {
-                    typeof(IEffect),
-                    typeof(IMouseAware),
-                    typeof(IEditableEffect)
-                };
+		private void InitializeKeyboardHook()
+		{
+			keyboardHook = new KeyboardHook(keys => keys == Keys.PrintScreen);
+			keyboardHook.OnKeyHook += KeyboardHook_OnKeyHook;
+		}
 
-        private void RegisterEffects()
-        {
-            foreach (var plugin in pluginManager.Plugins)
-            {
-                var selectionTypes = plugin.GetPluginTypes<ISelectionEffect>();
-                var screenshotTypes = plugin.GetPluginTypes<IScreenshotEffect>();
+		private void InitializePlugins()
+		{
+			pluginManager = new PluginManager();
+			var pluginInterfaces = new[]
+			{
+				typeof(IEffect),
+				typeof(IEditableEffect),
+				typeof(IExportAction),
+				typeof(IEditorManager)
+			};
 
-                var effectTypes = plugin.GetPluginTypes<IEffect>();
-                var effectsInfo = effectTypes
-                    .Except(selectionTypes)
-                    .Except(screenshotTypes)
-                    .Select(type => BuildEffectInfo(type, plugin));
+			pluginManager.LoadFrom("Plugins", pluginInterfaces);
+		}
 
-                var selectionConstructors = selectionTypes
-                    .Select(type => new Func<ISelectionEffect>(() => plugin.CreatePlugin<ISelectionEffect>(type, additionalInterfaces)));
-                var screenshotConstructors = screenshotTypes
-                    .Select(type => new Func<IScreenshotEffect>(() => plugin.CreatePlugin<IScreenshotEffect>(type, additionalInterfaces)));
-                effectsManager.Register(effectsInfo);
-                effectsManager.Register(selectionConstructors);
-                effectsManager.Register(screenshotConstructors);
-            }
-        }
+		private void RegisterEditorPlugins()
+		{
+			int id = 1;
+			foreach (var plugin in pluginManager.Plugins)
+			{
+				editorManager.RegisterPlugin(id++, plugin);
+			}
+		}
 
-        private static EffectInfo BuildEffectInfo(string type, PluginHost plugin)
-        {
-            var name = type.Split('.').Last();
-            var resourceName = name + ".png";
-            Stream stream;
-            try
-            {
-                stream = plugin.GetPluginResourceStream(resourceName);
-            }
-            catch (PluginException)
-            {
-                // TODO: log exception
-                stream = null;
-            }
+		private void KeyboardHook_OnKeyHook(object sender, KeyEventArgs e)
+		{
+			editorManager.TakeScreenshot();
+		}
 
-            var image = stream == null ? null : Image.FromStream(stream);
-            return new EffectInfo(
-                name,
-                image,
-                new Func<IEffect>(() => plugin.CreatePlugin<IEffect>(type, additionalInterfaces)));
-        }
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			isClosing = true;
+			Close();
+		}
 
-        private static ExportActionInfo BuildExprotActionInfo(string type, PluginHost plugin)
-        {
-            var name = type.Split('.').Last();
-            var resourceName = name + ".png";
-            Stream stream;
-            try
-            {
-                stream = plugin.GetPluginResourceStream(resourceName);
-            }
-            catch (PluginException)
-            {
-                // TODO: log exception
-                stream = null;
-            }
+		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			if (keyboardHook != null)
+			{
+				keyboardHook.Dispose();
+			}
 
-            var image = stream == null ? null : Image.FromStream(stream);
-            return new ExportActionInfo(
-                name,
-                image,
-                new Func<IExportAction>(() => plugin.CreatePlugin<IExportAction>(type)));
-        }
+			pluginManager.Dispose();
+		}
 
-        private void RegisterExportActions()
-        {
-            foreach (var plugin in pluginManager.Plugins)
-            {
-                var actionTypes = plugin.GetPluginTypes<IExportAction>();
-                var actionsInfo = actionTypes.Select(actionType => BuildExprotActionInfo(actionType, plugin));
-                exportManager.Register(actionsInfo);
-            }
-        }
+		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (e.CloseReason == CloseReason.UserClosing && !isClosing)
+			{
+				e.Cancel = true;
+				this.WindowState = FormWindowState.Minimized;
+				this.ShowInTaskbar = false;
+			}
+		}
 
-        private void KeyboardHook_OnKeyHook(object sender, KeyEventArgs e)
-        {
-            if (editorForm != null)
-            {
-                return;
-            }
+		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (aboutForm != null)
+			{
+				aboutForm.Activate();
+				return;
+			}
 
-            editorForm = new EditorForm(this.effectsManager, this.exportManager);
-            try
-            {
-                editorForm.ShowDialog();
-            }
-            finally
-            {
-                var form = editorForm;
-                editorForm = null;
-                form.Dispose();
-            }
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            isClosing = true;
-            Close();
-        }
-
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            if (keyboardHook != null)
-            {
-                keyboardHook.Dispose();
-            }
-
-            effectsManager.Dispose();
-            exportManager.Dispose();
-            pluginManager.Dispose();
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing && !isClosing)
-            {
-                e.Cancel = true;
-                this.WindowState = FormWindowState.Minimized;
-                this.ShowInTaskbar = false;
-            }
-        }
-
-        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Normal;
-            this.ShowInTaskbar = true;
-        }
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (aboutForm != null)
-            {
-                aboutForm.Activate();
-                return;
-            }
-
-            using (aboutForm = new AboutForm())
-            {
-                aboutForm.ShowDialog(this);
-                aboutForm = null;
-            }
-        }
-    }
+			using (aboutForm = new AboutForm())
+			{
+				aboutForm.ShowDialog(this);
+				aboutForm = null;
+			}
+		}
+	}
 }

@@ -1,4 +1,4 @@
-﻿namespace Pasta.Screenshot
+﻿namespace Pasta.Editor
 {
     partial class EditorForm
     {

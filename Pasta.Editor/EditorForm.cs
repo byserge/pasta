@@ -1,6 +1,6 @@
 ﻿using Pasta.Core;
-using Pasta.Screenshot.Effects;
-using Pasta.Screenshot.ExportActions;
+using Pasta.Editor.Effects;
+using Pasta.Editor.ExportActions;
 using System;
 using System.Data;
 using System.Drawing;
@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Pasta.Screenshot
+namespace Pasta.Editor
 {
 	internal partial class EditorForm : Form
 	{

@@ -5,7 +5,7 @@ using System.Drawing.Drawing2D;
 
 namespace Pasta.BasicEffects
 {
-	public class RectangleEffect: PointsBaseEffect, IEditableEffect, IMouseAware
+	public class RectangleEffect : PointsBaseEffect, IEditableEffect, IMouseAware
 	{
 		/// <summary>
 		/// The arrow line width.
@@ -24,8 +24,8 @@ namespace Pasta.BasicEffects
 
 		public RectangleEffect()
 		{
-            // I don't know, why setting inflate size less then +20 leads to disappearing right side of the rectangle 
-            // while moving mouse quickly to the right.
+			// I don't know, why setting inflate size less then +20 leads to disappearing right side of the rectangle 
+			// while moving mouse quickly to the right.
 			var inflateWidthHeight = (int)Math.Ceiling(lineWidth + 20);
 			inflateSize = new Size(inflateWidthHeight, inflateWidthHeight);
 
@@ -33,17 +33,17 @@ namespace Pasta.BasicEffects
 			pen = new Pen(Color.Red, lineWidth);
 		}
 
-        protected override Size InflateSize => inflateSize;
+		protected override Size InflateSize => inflateSize;
 
-        protected override void ApplyEffect()
-        {
-            if (points.Count < 2)
-                return;
+		protected override void ApplyEffect()
+		{
+			if (points.Count < 2)
+				return;
 
-            var smoothingMode = context.Graphics.SmoothingMode;
-            context.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            context.Graphics.DrawRectangle(pen, RectangleExtensions.FromPoints(points));
-            context.Graphics.SmoothingMode = smoothingMode;
-        }
+			var smoothingMode = context.Graphics.SmoothingMode;
+			context.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+			context.Graphics.DrawRectangle(pen, RectangleExtensions.FromPoints(points));
+			context.Graphics.SmoothingMode = smoothingMode;
+		}
 	}
 }

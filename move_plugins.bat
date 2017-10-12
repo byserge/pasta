@@ -12,5 +12,6 @@ mkdir %TargetDir%Plugins
 xcopy Pasta.BasicEffects\bin\%Configuration% %TargetDir%Plugins\Pasta.BasicEffects /E /I /Y /EXCLUDE:exclude.txt
 xcopy Pasta.BasicExport\bin\%Configuration% %TargetDir%Plugins\Pasta.BasicExport /E /I /Y /EXCLUDE:exclude.txt
 xcopy Pasta.OcrExport\bin\%Configuration% %TargetDir%Plugins\Pasta.OcrExport /E /I /Y /EXCLUDE:exclude.txt
+xcopy Pasta.Editor\bin\%Configuration% %TargetDir%Plugins\Pasta.Editor /E /I /Y /EXCLUDE:exclude.txt
 
 chdir /d %OLDDIR% &rem restore current directory

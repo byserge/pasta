@@ -1,7 +1,5 @@
 ﻿using Pasta.Core;
 using System.Drawing;
-using System;
-using System.Windows.Forms;
 
 namespace Pasta.BasicEffects
 {
@@ -15,17 +13,31 @@ namespace Pasta.BasicEffects
 		/// <summary>
 		/// The brush to gray out outside the selection.
 		/// </summary>
-		private Brush grayBrush = new SolidBrush(Color.FromArgb(100, Color.Black));
+		private readonly Brush grayBrush = new SolidBrush(Color.FromArgb(100, Color.Black));
+
+		/// <summary>
+		/// The pen to highlight the border of the selection - especially important on black backgrounds.
+		/// </summary>
+		private readonly Pen borderPen = Pens.White;
 
 		#region ISelectionEffect
 		public Rectangle Selection => RectangleExtensions.FromPoints(points);
-        #endregion
+		#endregion
 
-        protected override void ApplyEffect()
-        {
-            var grayedRectangles = context.Bounds.Except(Selection);
+		protected override Size InflateSize { get; } = new Size(2, 2);
 
-            context.Graphics.FillRectangles(grayBrush, grayedRectangles);
-        }        
+		protected override void ApplyEffect()
+		{
+			var grayedRectangles = context.Bounds.Except(Selection);
+
+			context.Graphics.FillRectangles(grayBrush, grayedRectangles);
+
+			if (Selection.HasArea())
+			{
+				var borderRectangle = new Rectangle(Selection.X - 1, Selection.Y - 1, Selection.Width + 1, Selection.Height + 1);
+				
+				context.Graphics.DrawRectangle(borderPen, borderRectangle);
+			}
+		}
 	}
 }

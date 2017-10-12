@@ -5,7 +5,7 @@ using System.Linq;
 using System;
 using System.Collections.ObjectModel;
 
-namespace Pasta.Screenshot.Effects
+namespace Pasta.Editor.Effects
 {
 	internal class EffectsManager : MarshalByRefObject, IDisposable
 	{
@@ -30,7 +30,7 @@ namespace Pasta.Screenshot.Effects
 		/// </summary>
 		private IEffect selectedEffect;
 
-        private EffectContext context;
+		private EffectContext context;
 
 		public event EventHandler<InvalidatedEventArgs> Invalidated;
 
@@ -42,7 +42,7 @@ namespace Pasta.Screenshot.Effects
 		public EffectsManager()
 		{
 			EffectsInfo = new ReadOnlyCollection<EffectInfo>(effectsInfo);
-            Clear();
+			Clear();
 		}
 
 		#region IMouseAware
@@ -84,30 +84,30 @@ namespace Pasta.Screenshot.Effects
 			SelectEffect(effect);
 		}
 
-        /// <summary>
-        /// Clears the manager after previous use:
-        /// Removes all applied effects and subscriptions
-        /// Rectreats context.
-        /// </summary>
-        public void Clear()
-        {
-            if (context != null)
-            {
-                context.Invalidated -= Effect_Invalidated;
-            }
+		/// <summary>
+		/// Clears the manager after previous use:
+		/// Removes all applied effects and subscriptions
+		/// Rectreats context.
+		/// </summary>
+		public void Clear()
+		{
+			if (context != null)
+			{
+				context.Invalidated -= Effect_Invalidated;
+			}
 
-            selectedEffect = null;
-            context = new EffectContext();
-            context.Invalidated += Effect_Invalidated;
-            effects.Clear();
-        }
+			selectedEffect = null;
+			context = new EffectContext();
+			context.Invalidated += Effect_Invalidated;
+			effects.Clear();
+		}
 
-        /// <summary>
-        /// Creates an image and applies all effects to it.
-        /// </summary>
-        /// <param name="size">The size of the image.</param>
-        /// <returns>The image with all effects applied.</returns>
-        public Image CreateImage(Size size)
+		/// <summary>
+		/// Creates an image and applies all effects to it.
+		/// </summary>
+		/// <param name="size">The size of the image.</param>
+		/// <returns>The image with all effects applied.</returns>
+		public Image CreateImage(Size size)
 		{
 			// Create an image and apply effects
 			var bmp = new Bitmap(size.Width, size.Height);
@@ -250,18 +250,18 @@ namespace Pasta.Screenshot.Effects
 			Invalidated?.Invoke(this, e);
 		}
 
-        public void Dispose()
-        {
-            if (context != null)
-            {
-                context.Invalidated -= Effect_Invalidated;
-                context = null;
-            }
+		public void Dispose()
+		{
+			if (context != null)
+			{
+				context.Invalidated -= Effect_Invalidated;
+				context = null;
+			}
 
-            effects.Clear();
-            effectsInfo.Clear();
-            selectionConstructor = null;
-            screenshotConstructor = null;
-        }
-    }
+			effects.Clear();
+			effectsInfo.Clear();
+			selectionConstructor = null;
+			screenshotConstructor = null;
+		}
+	}
 }

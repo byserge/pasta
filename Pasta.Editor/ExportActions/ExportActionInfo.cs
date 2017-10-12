@@ -2,12 +2,12 @@
 using System;
 using System.Drawing;
 
-namespace Pasta.Screenshot.ExportActions
+namespace Pasta.Editor.ExportActions
 {
 	/// <summary>
 	/// Represents export action info used to create a new action.
 	/// </summary>
-	public class ExportActionInfo
+	internal class ExportActionInfo
     {
         /// <summary>
         /// The export action name
