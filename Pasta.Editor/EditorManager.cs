@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using Pasta.Core;
 using Pasta.Editor.Effects;
 using Pasta.Editor.ExportActions;
@@ -16,6 +17,7 @@ namespace Pasta.Editor
 	{
 		private readonly EffectsManager effectsManager = new EffectsManager();
 		private readonly ExportManager exportManager = new ExportManager();
+		private object lockObj = new object();
 
 		/// <summary>
 		/// Current editor form.
@@ -24,22 +26,29 @@ namespace Pasta.Editor
 
 		public void TakeScreenshot()
 		{
+
 			if (editorForm != null)
-			{
 				return;
+
+			lock (lockObj)
+			{
+				if (editorForm != null)
+					return;
+
+				editorForm = new EditorForm(this.effectsManager, this.exportManager);
 			}
 
-			editorForm = new EditorForm(this.effectsManager, this.exportManager);
-			try
+			editorForm.Closed += (sender, args) =>
 			{
-				editorForm.ShowDialog();
-			}
-			finally
-			{
-				var form = editorForm;
-				editorForm = null;
-				form.Dispose();
-			}
+				if (editorForm != null)
+				{
+					var form = editorForm;
+					editorForm = null;
+					form.Dispose();
+				}
+			};
+
+			editorForm.Show();
 		}
 
 		private static readonly Type[] AdditionalInterfaces = new[]

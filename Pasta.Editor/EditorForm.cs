@@ -84,7 +84,7 @@ namespace Pasta.Editor
 		{
 			var bounds = Screen.AllScreens
 				.Select(screen => screen.Bounds)
-				.Aggregate((acc, screenBounds) => Rectangle.Union(acc, screenBounds));
+				.Aggregate(Rectangle.Union);
 			this.Location = bounds.Location;
 			this.Size = bounds.Size;
 
@@ -183,6 +183,11 @@ namespace Pasta.Editor
 				return;
 			}
 
+			if (SynchronizationContext.Current == null)
+			{
+				SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+			}
+
 			var actionInfo = button.Tag as ExportActionInfo;
 
 			await RunExportAction(actionInfo);
@@ -200,7 +205,8 @@ namespace Pasta.Editor
 
 		private void EditorForm_Deactivate(object sender, EventArgs e)
 		{
-			Close();
+			if (!Disposing)
+				Close();
 		}
 	}
 }

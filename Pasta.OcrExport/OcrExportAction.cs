@@ -25,7 +25,9 @@ namespace Pasta.OcrExport
 		public void Export(ExportContext context)
 		{
 			var imageBytes = context.CreateImageByteArray(System.Drawing.Imaging.ImageFormat.Tiff.Guid);
-			Clipboard.SetText(ParseImageText(imageBytes));
+			var parsedText = ParseImageText(imageBytes);
+			if (!string.IsNullOrWhiteSpace(parsedText))
+				Clipboard.SetText(parsedText);
 		}
 
 		private string ParseImageText(byte[] tifImage)

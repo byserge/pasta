@@ -11,6 +11,7 @@ namespace Pasta.Screenshot
 		private KeyboardHook keyboardHook;
 
 		private IEditorManager editorManager;
+		private Sponsor sponsor;
 
 		private PluginManager pluginManager;
 
@@ -37,7 +38,10 @@ namespace Pasta.Screenshot
 		{
 			var editorManagerPlugin = pluginManager.Plugins.First(plugin => plugin.HasPluginInterfaces(new[] { typeof(IEditorManager) }));
 			var pluginType = pluginManager.GetPluginTypes<IEditorManager>().First();
+			sponsor = new Sponsor();
+
 			editorManager = editorManagerPlugin.CreatePlugin<IEditorManager>(pluginType);
+			sponsor.Register(editorManager);
 		}
 
 		private void InitializeKeyboardHook()
@@ -82,10 +86,9 @@ namespace Pasta.Screenshot
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (keyboardHook != null)
-			{
-				keyboardHook.Dispose();
-			}
+			keyboardHook?.Dispose();
+
+			sponsor?.Dispose();
 
 			pluginManager.Dispose();
 		}
