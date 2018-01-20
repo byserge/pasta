@@ -91,10 +91,7 @@ namespace Pasta.BasicEffects
 		protected virtual Rectangle GetEffectRectangle(List<Point> points)
 		{
 			var rectangle = RectangleExtensions.FromPoints(points);
-			if (rectangle.HasArea())
-			{
-				rectangle = InflateRectangle(rectangle);
-			}
+			rectangle = InflateRectangle(rectangle);
 
 			return rectangle;
 		}

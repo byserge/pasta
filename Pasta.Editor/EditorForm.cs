@@ -32,6 +32,16 @@ namespace Pasta.Editor
 #endif
 		}
 
+		/// <summary>
+		/// Takes a screenshot.
+		/// </summary>
+		public void PrintScreen()
+		{
+			this.effectsManager.Clear();
+			effectsManager.CaptureScreen();
+			effectsManager.StartSelection();
+		}
+
 		private void UpdateEffectsToolbar()
 		{
 			effectsToolStrip.Items.Clear();
@@ -61,7 +71,7 @@ namespace Pasta.Editor
 					Tag = actionInfo,
 					Image = actionInfo.IconImage,
 					DisplayStyle = ToolStripItemDisplayStyle.Image,
-					ImageScaling = ToolStripItemImageScaling.SizeToFit
+					ImageScaling = ToolStripItemImageScaling.SizeToFit,
 				};
 
 				actionsToolStrip.Items.Add(button);
@@ -70,27 +80,18 @@ namespace Pasta.Editor
 
 		private void EditorForm_Load(object sender, EventArgs e)
 		{
-			this.effectsManager.Clear();
 			effectsManager.Invalidated += Effects_Invalidated;
-			PrintScreen();
-		}
 
-		private void EditorForm_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			effectsManager.Invalidated -= Effects_Invalidated;
-		}
-
-		private void PrintScreen()
-		{
 			var bounds = Screen.AllScreens
 				.Select(screen => screen.Bounds)
 				.Aggregate(Rectangle.Union);
 			this.Location = bounds.Location;
 			this.Size = bounds.Size;
+		}
 
-			effectsManager.CaptureScreen();
-			effectsManager.StartSelection();
-			Invalidate(false);
+		private void EditorForm_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			effectsManager.Invalidated -= Effects_Invalidated;
 		}
 
 		private async Task RunExportAction(ExportActionInfo actionInfo)
@@ -150,7 +151,7 @@ namespace Pasta.Editor
 			this.Invalidate(e.Rectangle, false);
 		}
 
-		private void effectsToolStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		private void EffectsToolStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
 			var button = e.ClickedItem as ToolStripButton;
 			if (button == null)
@@ -175,10 +176,9 @@ namespace Pasta.Editor
 			}
 		}
 
-		private async void actionsToolStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		private async void ActionsToolStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			var button = e.ClickedItem as ToolStripButton;
-			if (button == null)
+			if (!(e.ClickedItem is ToolStripButton button))
 			{
 				return;
 			}
@@ -195,18 +195,35 @@ namespace Pasta.Editor
 			Close();
 		}
 
-		private void EditorForm_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Escape)
-			{
-				Close();
-			}
-		}
-
 		private void EditorForm_Deactivate(object sender, EventArgs e)
 		{
 			if (!Disposing)
 				Close();
+		}
+
+		private async void EditorForm_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.KeyData == Keys.Escape)
+			{
+				Close();
+				return;
+			}
+		}
+
+		private async void EditorForm_KeyDown(object sender, KeyEventArgs e)
+		{
+			var action = exportManager.ActionsInfo.FirstOrDefault(x => x.KeyShortcut == e.KeyData);
+			if (action != null)
+			{
+				if (SynchronizationContext.Current == null)
+				{
+					SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+				}
+
+				await RunExportAction(action);
+				Close();
+				return;
+			}
 		}
 	}
 }

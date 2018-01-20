@@ -128,6 +128,11 @@ namespace Pasta.Editor.Effects
 			try
 			{
 				var selection = selectionEffect.Selection;
+				if (selection.Width == 0 || selection.Height == 0)
+				{
+					selection = new Rectangle(Point.Empty, size);
+				}
+
 				return bmp.Clone(selection, bmp.PixelFormat);
 			}
 			finally

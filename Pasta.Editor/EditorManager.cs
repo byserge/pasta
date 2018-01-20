@@ -36,6 +36,7 @@ namespace Pasta.Editor
 					return;
 
 				editorForm = new EditorForm(this.effectsManager, this.exportManager);
+				editorForm.PrintScreen();
 			}
 
 			editorForm.Closed += (sender, args) =>
@@ -127,11 +128,14 @@ namespace Pasta.Editor
 				stream = null;
 			}
 
+			var keys = name.Contains("Clipboard") ? (Keys.C | Keys.Control) : Keys.None;
+
 			var image = stream == null ? null : Image.FromStream(stream);
 			return new ExportActionInfo(
 				name,
 				image,
-				new Func<IExportAction>(() => plugin.CreatePlugin<IExportAction>(type)));
+				new Func<IExportAction>(() => plugin.CreatePlugin<IExportAction>(type)),
+				keys);
 		}
 	}
 }
