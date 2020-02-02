@@ -3,7 +3,7 @@ set OLDDIR=%CD%
 cd /d %~dp0 
 
 set Configuration=%~1
-if "%~1"=="" set Configuration=Debug
+if "%~1"=="" set Configuration=Debug\net472
 
 set TargetDir=Pasta.Screenshot\bin\%Configuration%\
 

@@ -1,30 +1,35 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Screenshot", "Pasta.Screenshot\Pasta.Screenshot.csproj", "{7FB7941A-FC4C-45B6-9739-20120E2C5FE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasta.Screenshot", "Pasta.Screenshot\Pasta.Screenshot.csproj", "{7FB7941A-FC4C-45B6-9739-20120E2C5FE7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8D4BEB0B-F791-4408-B4C3-1AAE644CFA61} = {8D4BEB0B-F791-4408-B4C3-1AAE644CFA61}
 		{93E9A65D-54C7-40F4-B89D-0263BAE020A7} = {93E9A65D-54C7-40F4-B89D-0263BAE020A7}
 		{833FDFCD-C8E6-42F2-AA63-66D155629114} = {833FDFCD-C8E6-42F2-AA63-66D155629114}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Core", "Pasta.Core\Pasta.Core.csproj", "{54BCD403-F0A7-4726-8381-E00A0ED8946A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasta.Core", "Pasta.Core\Pasta.Core.csproj", "{54BCD403-F0A7-4726-8381-E00A0ED8946A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.BasicEffects", "Pasta.BasicEffects\Pasta.BasicEffects.csproj", "{8D4BEB0B-F791-4408-B4C3-1AAE644CFA61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasta.BasicEffects", "Pasta.BasicEffects\Pasta.BasicEffects.csproj", "{8D4BEB0B-F791-4408-B4C3-1AAE644CFA61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.BasicExport", "Pasta.BasicExport\Pasta.BasicExport.csproj", "{93E9A65D-54C7-40F4-B89D-0263BAE020A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasta.BasicExport", "Pasta.BasicExport\Pasta.BasicExport.csproj", "{93E9A65D-54C7-40F4-B89D-0263BAE020A7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BC10F827-2015-40D2-B9DF-9FDE7C519EB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.BasicEffects.UnitTests", "Pasta.BasicEffects.UnitTests\Pasta.BasicEffects.UnitTests.csproj", "{1A15FFD4-C62A-4750-9238-C60FA654C76B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasta.BasicEffects.UnitTests", "Pasta.BasicEffects.UnitTests\Pasta.BasicEffects.UnitTests.csproj", "{1A15FFD4-C62A-4750-9238-C60FA654C76B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Plugin", "Pasta.Plugin\Pasta.Plugin.csproj", "{AD924D97-B5E2-4E66-A35C-CD0359AFC8A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasta.Plugin", "Pasta.Plugin\Pasta.Plugin.csproj", "{AD924D97-B5E2-4E66-A35C-CD0359AFC8A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.OcrExport", "Pasta.OcrExport\Pasta.OcrExport.csproj", "{833FDFCD-C8E6-42F2-AA63-66D155629114}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasta.OcrExport", "Pasta.OcrExport\Pasta.OcrExport.csproj", "{833FDFCD-C8E6-42F2-AA63-66D155629114}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasta.Editor", "Pasta.Editor\Pasta.Editor.csproj", "{DDACDCDD-F002-47F0-9D11-A235E28A4D04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasta.Editor", "Pasta.Editor\Pasta.Editor.csproj", "{DDACDCDD-F002-47F0-9D11-A235E28A4D04}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D30B76F6-90C6-4989-94E2-88EBCB48CFB6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

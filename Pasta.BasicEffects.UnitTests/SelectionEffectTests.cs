@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Pasta.Core;
 using System.Collections.Generic;
 using System.Drawing;
@@ -23,9 +22,9 @@ namespace Pasta.BasicEffects.UnitTests
 		{
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
-            var context = new EffectContext();
-            context.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
-            selectionEffect.Apply(context);
+			var context = new EffectContext();
+			context.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			selectionEffect.Apply(context);
 
 			selectionEffect.OnMouseDown(new MouseAwareArgs(MouseButtons.Left, 1, 10, 10, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 20, 20, 0));
@@ -44,10 +43,10 @@ namespace Pasta.BasicEffects.UnitTests
 		{
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
-            var editContext = new EffectContext();
-            editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			var editContext = new EffectContext();
+			editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
 
-            selectionEffect.StartEdit(editContext);
+			selectionEffect.StartEdit(editContext);
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 20, 20, 0));
 			selectionEffect.OnMouseUp(new MouseAwareArgs(MouseButtons.Left, 1, 20, 20, 0));
 
@@ -65,9 +64,9 @@ namespace Pasta.BasicEffects.UnitTests
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
 			var editContext = new EffectContext();
-            editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
 
-            selectionEffect.StartEdit(editContext);
+			selectionEffect.StartEdit(editContext);
 			selectionEffect.OnMouseDown(new MouseAwareArgs(MouseButtons.Right | MouseButtons.Middle, 1, 10, 10, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Right | MouseButtons.Middle, 1, 20, 20, 0));
 			selectionEffect.OnMouseUp(new MouseAwareArgs(MouseButtons.Right | MouseButtons.Middle, 1, 20, 20, 0));
@@ -87,9 +86,9 @@ namespace Pasta.BasicEffects.UnitTests
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
 			var editContext = new EffectContext();
-            editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
 
-            selectionEffect.StartEdit(editContext);
+			selectionEffect.StartEdit(editContext);
 			selectionEffect.OnMouseDown(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 20, 30, 0));
 			selectionEffect.OnMouseUp(new MouseAwareArgs(MouseButtons.Left, 1, 20, 20, 0));
@@ -111,9 +110,9 @@ namespace Pasta.BasicEffects.UnitTests
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
 			var editContext = new EffectContext();
-            editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
 
-            selectionEffect.StartEdit(editContext);
+			selectionEffect.StartEdit(editContext);
 			selectionEffect.OnMouseDown(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 20, 30, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 100, 200, 0));
@@ -141,9 +140,9 @@ namespace Pasta.BasicEffects.UnitTests
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
 			var editContext = new EffectContext();
-            editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
 
-            selectionEffect.StartEdit(editContext);
+			selectionEffect.StartEdit(editContext);
 			selectionEffect.OnMouseDown(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 20, 30, 0));
 			selectionEffect.OnMouseUp(new MouseAwareArgs(MouseButtons.Left, 1, 20, 30, 0));
@@ -176,9 +175,9 @@ namespace Pasta.BasicEffects.UnitTests
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
 			var editContext = new EffectContext();
-            editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
 
-            selectionEffect.StartEdit(editContext);
+			selectionEffect.StartEdit(editContext);
 			selectionEffect.OnMouseDown(new MouseAwareArgs(MouseButtons.Left, 1, 20, 30, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
 			selectionEffect.OnMouseUp(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
@@ -211,9 +210,9 @@ namespace Pasta.BasicEffects.UnitTests
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
 			var editContext = new EffectContext();
-            editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
 
-            selectionEffect.StartEdit(editContext);
+			selectionEffect.StartEdit(editContext);
 			selectionEffect.OnMouseDown(new MouseAwareArgs(MouseButtons.Left, 1, 20, 30, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
 			selectionEffect.OnMouseUp(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
@@ -249,9 +248,9 @@ namespace Pasta.BasicEffects.UnitTests
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
 			var editContext = new EffectContext();
-            editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
 
-            selectionEffect.StartEdit(editContext);
+			selectionEffect.StartEdit(editContext);
 			selectionEffect.OnMouseDown(new MouseAwareArgs(MouseButtons.Left, 1, 20, 30, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
 			selectionEffect.OnMouseUp(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
@@ -282,9 +281,9 @@ namespace Pasta.BasicEffects.UnitTests
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
 			var editContext = new EffectContext();
-            editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
 
-            selectionEffect.StartEdit(editContext);
+			selectionEffect.StartEdit(editContext);
 			selectionEffect.OnMouseDown(new MouseAwareArgs(MouseButtons.Left, 1, 20, 30, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
 			selectionEffect.OnMouseUp(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
@@ -317,9 +316,9 @@ namespace Pasta.BasicEffects.UnitTests
 			var requestedInvalidateRectangles = new List<Rectangle>();
 			var selectionEffect = new SelectionEffect();
 			var editContext = new EffectContext();
-            editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
+			editContext.Invalidated += (sender, args) => requestedInvalidateRectangles.Add(args.Rectangle);
 
-            selectionEffect.StartEdit(editContext);
+			selectionEffect.StartEdit(editContext);
 			selectionEffect.OnMouseDown(new MouseAwareArgs(MouseButtons.Left, 1, 20, 30, 0));
 			selectionEffect.OnMouseMove(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));
 			selectionEffect.OnMouseUp(new MouseAwareArgs(MouseButtons.Left, 1, 5, 10, 0));

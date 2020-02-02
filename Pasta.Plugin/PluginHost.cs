@@ -1,4 +1,5 @@
-﻿using Castle.DynamicProxy;
+﻿using Castle.Core.Interceptor;
+using Castle.DynamicProxy;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -136,7 +137,9 @@ namespace Pasta.Plugin
 				Selector = null,
 			};
 
-			var proxy = (TInterface)proxyGenerator.CreateInterfaceProxyWithTarget(interfaceType, interfacesToProxy, pluginObj, proxyOptions);
+			var interceptors = new IInterceptor[] { new ExceptionInterceptor() };
+
+			var proxy = (TInterface)proxyGenerator.CreateInterfaceProxyWithTarget(interfaceType, interfacesToProxy, pluginObj, proxyOptions, interceptors);
 
 			return proxy;
 		}
